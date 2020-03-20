@@ -22,10 +22,10 @@ if opt.continue_train:
     except:
         start_epoch, epoch_iter = 1, 0
     print('Resuming from epoch %d at iteration %d' % (start_epoch, epoch_iter))        
-else:    
+else:
     start_epoch, epoch_iter = 1, 0
 
-opt.print_freq = lcm(opt.print_freq, opt.batchSize)    
+opt.print_freq = lcm(opt.print_freq, opt.batchSize)
 if opt.debug:
     opt.display_freq = 1
     opt.print_freq = 1
@@ -81,19 +81,19 @@ for epoch in range(start_epoch, opt.niter + opt.niter_decay + 1):
         ############### Backward Pass ####################
         # update generator weights
         optimizer_G.zero_grad()
-        if opt.fp16:                                
-            with amp.scale_loss(loss_G, optimizer_G) as scaled_loss: scaled_loss.backward()                
+        if opt.fp16:
+            with amp.scale_loss(loss_G, optimizer_G) as scaled_loss: scaled_loss.backward()
         else:
-            loss_G.backward()          
+            loss_G.backward()
         optimizer_G.step()
 
         # update discriminator weights
         optimizer_D.zero_grad()
-        if opt.fp16:                                
-            with amp.scale_loss(loss_D, optimizer_D) as scaled_loss: scaled_loss.backward()                
+        if opt.fp16:
+            with amp.scale_loss(loss_D, optimizer_D) as scaled_loss: scaled_loss.backward()
         else:
-            loss_D.backward()        
-        optimizer_D.step()        
+            loss_D.backward()
+        optimizer_D.step()
 
         ############## Display results and errors ##########
         ### print out errors

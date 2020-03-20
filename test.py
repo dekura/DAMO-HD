@@ -29,7 +29,7 @@ if not opt.engine and not opt.onnx:
         model.half()
     elif opt.data_type == 8:
         model.type(torch.uint8)
-            
+
     if opt.verbose:
         print(model)
 else:

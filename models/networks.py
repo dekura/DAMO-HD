@@ -184,8 +184,8 @@ class GlobalGenerator(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=64, n_downsampling=3, n_blocks=9, norm_layer=nn.BatchNorm2d, 
                  padding_type='reflect'):
         assert(n_blocks >= 0)
-        super(GlobalGenerator, self).__init__()        
-        activation = nn.ReLU(True)        
+        super(GlobalGenerator, self).__init__()
+        activation = nn.ReLU(True)
 
         model = [nn.ReflectionPad2d(3), nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0), norm_layer(ngf), activation]
         ### downsample
@@ -198,18 +198,18 @@ class GlobalGenerator(nn.Module):
         mult = 2**n_downsampling
         for i in range(n_blocks):
             model += [ResnetBlock(ngf * mult, padding_type=padding_type, activation=activation, norm_layer=norm_layer)]
-        
-        ### upsample         
+
+        ### upsample
         for i in range(n_downsampling):
             mult = 2**(n_downsampling - i)
             model += [nn.ConvTranspose2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=2, padding=1, output_padding=1),
                        norm_layer(int(ngf * mult / 2)), activation]
-        model += [nn.ReflectionPad2d(3), nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0), nn.Tanh()]        
+        model += [nn.ReflectionPad2d(3), nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0), nn.Tanh()]
         self.model = nn.Sequential(*model)
-            
+
     def forward(self, input):
-        return self.model(input)             
-        
+        return self.model(input)
+
 # Define a resnet block
 class ResnetBlock(nn.Module):
     def __init__(self, dim, padding_type, norm_layer, activation=nn.ReLU(True), use_dropout=False):
@@ -254,22 +254,22 @@ class ResnetBlock(nn.Module):
 
 class Encoder(nn.Module):
     def __init__(self, input_nc, output_nc, ngf=32, n_downsampling=4, norm_layer=nn.BatchNorm2d):
-        super(Encoder, self).__init__()        
-        self.output_nc = output_nc        
+        super(Encoder, self).__init__()
+        self.output_nc = output_nc
 
         model = [nn.ReflectionPad2d(3), nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0), 
-                 norm_layer(ngf), nn.ReLU(True)]             
+                 norm_layer(ngf), nn.ReLU(True)]
         ### downsample
         for i in range(n_downsampling):
             mult = 2**i
             model += [nn.Conv2d(ngf * mult, ngf * mult * 2, kernel_size=3, stride=2, padding=1),
                       norm_layer(ngf * mult * 2), nn.ReLU(True)]
 
-        ### upsample         
+        ### upsample
         for i in range(n_downsampling):
             mult = 2**(n_downsampling - i)
             model += [nn.ConvTranspose2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=2, padding=1, output_padding=1),
-                       norm_layer(int(ngf * mult / 2)), nn.ReLU(True)]        
+                       norm_layer(int(ngf * mult / 2)), nn.ReLU(True)]
 
         model += [nn.ReflectionPad2d(3), nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0), nn.Tanh()]
         self.model = nn.Sequential(*model) 
@@ -279,29 +279,29 @@ class Encoder(nn.Module):
 
         # instance-wise average pooling
         outputs_mean = outputs.clone()
-        inst_list = np.unique(inst.cpu().numpy().astype(int))        
+        inst_list = np.unique(inst.cpu().numpy().astype(int))
         for i in inst_list:
             for b in range(input.size()[0]):
-                indices = (inst[b:b+1] == int(i)).nonzero() # n x 4            
+                indices = (inst[b:b+1] == int(i)).nonzero() # n x 4
                 for j in range(self.output_nc):
-                    output_ins = outputs[indices[:,0] + b, indices[:,1] + j, indices[:,2], indices[:,3]]                    
-                    mean_feat = torch.mean(output_ins).expand_as(output_ins)                                        
-                    outputs_mean[indices[:,0] + b, indices[:,1] + j, indices[:,2], indices[:,3]] = mean_feat                       
+                    output_ins = outputs[indices[:,0] + b, indices[:,1] + j, indices[:,2], indices[:,3]]
+                    mean_feat = torch.mean(output_ins).expand_as(output_ins)
+                    outputs_mean[indices[:,0] + b, indices[:,1] + j, indices[:,2], indices[:,3]] = mean_feat
         return outputs_mean
 
 class MultiscaleDiscriminator(nn.Module):
-    def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d, 
+    def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d,
                  use_sigmoid=False, num_D=3, getIntermFeat=False):
         super(MultiscaleDiscriminator, self).__init__()
         self.num_D = num_D
         self.n_layers = n_layers
         self.getIntermFeat = getIntermFeat
-     
+
         for i in range(num_D):
             netD = NLayerDiscriminator(input_nc, ndf, n_layers, norm_layer, use_sigmoid, getIntermFeat)
-            if getIntermFeat:                                
+            if getIntermFeat:
                 for j in range(n_layers+2):
-                    setattr(self, 'scale'+str(i)+'_layer'+str(j), getattr(netD, 'model'+str(j)))                                   
+                    setattr(self, 'scale'+str(i)+'_layer'+str(j), getattr(netD, 'model'+str(j)))
             else:
                 setattr(self, 'layer'+str(i), netD.model)
 
@@ -316,7 +316,7 @@ class MultiscaleDiscriminator(nn.Module):
         else:
             return [model(input)]
 
-    def forward(self, input):        
+    def forward(self, input):
         num_D = self.num_D
         result = []
         input_downsampled = input
@@ -329,7 +329,7 @@ class MultiscaleDiscriminator(nn.Module):
             if i != (num_D-1):
                 input_downsampled = self.downsample(input_downsampled)
         return result
-        
+
 # Defines the PatchGAN discriminator with the specified arguments.
 class NLayerDiscriminator(nn.Module):
     def __init__(self, input_nc, ndf=64, n_layers=3, norm_layer=nn.BatchNorm2d, use_sigmoid=False, getIntermFeat=False):
@@ -380,7 +380,7 @@ class NLayerDiscriminator(nn.Module):
                 res.append(model(res[-1]))
             return res[1:]
         else:
-            return self.model(input)        
+            return self.model(input)
 
 from torchvision import models
 class Vgg19(torch.nn.Module):
@@ -408,9 +408,9 @@ class Vgg19(torch.nn.Module):
 
     def forward(self, X):
         h_relu1 = self.slice1(X)
-        h_relu2 = self.slice2(h_relu1)        
-        h_relu3 = self.slice3(h_relu2)        
-        h_relu4 = self.slice4(h_relu3)        
-        h_relu5 = self.slice5(h_relu4)                
+        h_relu2 = self.slice2(h_relu1)
+        h_relu3 = self.slice3(h_relu2)
+        h_relu4 = self.slice4(h_relu3)
+        h_relu5 = self.slice5(h_relu4)
         out = [h_relu1, h_relu2, h_relu3, h_relu4, h_relu5]
         return out
