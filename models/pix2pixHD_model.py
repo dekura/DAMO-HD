@@ -124,8 +124,9 @@ class Pix2PixHDModel(BaseModel):
         if not self.opt.no_instance:
             inst_map = inst_map.data.cuda()
             edge_map = self.get_edges(inst_map)
-            input_label = torch.cat((input_label, edge_map), dim=1)         
-        input_label = Variable(input_label, volatile=infer)
+            input_label = torch.cat((input_label, edge_map), dim=1)
+        with torch.no_grad():
+            input_label = Variable(input_label)
 
         # real images for training
         if real_image is not None:
@@ -193,7 +194,7 @@ class Pix2PixHDModel(BaseModel):
         return [ self.loss_filter( loss_G_GAN, loss_G_GAN_Feat, loss_G_VGG, loss_D_real, loss_D_fake ), None if not infer else fake_image ]
 
     def inference(self, label, inst, image=None):
-        # Encode Inputs        
+        # Encode Inputs
         image = Variable(image) if image is not None else None
         input_label, inst_map, real_image, _ = self.encode_input(Variable(label), Variable(inst), image, infer=True)
 
@@ -203,12 +204,12 @@ class Pix2PixHDModel(BaseModel):
                 # encode the real image to get feature map
                 feat_map = self.netE.forward(real_image, inst_map)
             else:
-                # sample clusters from precomputed features             
+                # sample clusters from precomputed features
                 feat_map = self.sample_features(inst_map)
-            input_concat = torch.cat((input_label, feat_map), dim=1)                        
+            input_concat = torch.cat((input_label, feat_map), dim=1)
         else:
-            input_concat = input_label        
-           
+            input_concat = input_label
+
         if torch.__version__.startswith('0.4'):
             with torch.no_grad():
                 fake_image = self.netG.forward(input_concat)
@@ -216,22 +217,22 @@ class Pix2PixHDModel(BaseModel):
             fake_image = self.netG.forward(input_concat)
         return fake_image
 
-    def sample_features(self, inst): 
-        # read precomputed feature clusters 
-        cluster_path = os.path.join(self.opt.checkpoints_dir, self.opt.name, self.opt.cluster_path)        
+    def sample_features(self, inst):
+        # read precomputed feature clusters
+        cluster_path = os.path.join(self.opt.checkpoints_dir, self.opt.name, self.opt.cluster_path)
         features_clustered = np.load(cluster_path, encoding='latin1').item()
 
         # randomly sample from the feature clusters
-        inst_np = inst.cpu().numpy().astype(int)                                      
+        inst_np = inst.cpu().numpy().astype(int)
         feat_map = self.Tensor(inst.size()[0], self.opt.feat_num, inst.size()[2], inst.size()[3])
-        for i in np.unique(inst_np):    
+        for i in np.unique(inst_np):
             label = i if i < 1000 else i//1000
             if label in features_clustered:
                 feat = features_clustered[label]
-                cluster_idx = np.random.randint(0, feat.shape[0]) 
-                                            
+                cluster_idx = np.random.randint(0, feat.shape[0])
+
                 idx = (inst == int(i)).nonzero()
-                for k in range(self.opt.feat_num):                                    
+                for k in range(self.opt.feat_num):
                     feat_map[idx[:,0], idx[:,1] + k, idx[:,2], idx[:,3]] = feat[cluster_idx, k]
         if self.opt.data_type==16:
             feat_map = feat_map.half()
@@ -301,4 +302,4 @@ class InferenceModel(Pix2PixHDModel):
         label, inst = inp
         return self.inference(label, inst)
 
-        
+

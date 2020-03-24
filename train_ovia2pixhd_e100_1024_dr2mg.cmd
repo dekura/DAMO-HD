@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=hd4
+#SBATCH --job-name=hd41024
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
-#SBATCH --output=/research/dept7/glchen/tmp/log/ovia2pixhd_e100_dr2mg.txt
+#SBATCH --output=/research/dept7/glchen/tmp/log/ovia2pixhd_e100_1024_dr2mg.txt
 #SBATCH --gres=gpu:4
 
 
@@ -22,9 +22,8 @@
 --output_nc 3 \
 --norm batch \
 --data_type 8 \
---name ovia2pixhd_e100_dr2mg \
+--name ovia2pixhd_e100_1024_dr2mg \
 --label_nc 0 \
 --no_instance \
 --save_latest_freq 2000 \
---save_epoch_freq 20 \
---continue_train
+--save_epoch_freq 20

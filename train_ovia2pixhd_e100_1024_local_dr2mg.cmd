@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=hd4
+#SBATCH --job-name=l41024
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
-#SBATCH --output=/research/dept7/glchen/tmp/log/ovia2pixhd_e100_dr2mg.txt
+#SBATCH --output=/research/dept7/glchen/tmp/log/ovia2pixhd_e100_1024_local_dr2mg.txt
 #SBATCH --gres=gpu:4
 
 
@@ -10,7 +10,9 @@
 --gpu_ids 0,1,2,3 \
 --checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \
 --dataroot /research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via2/dmo \
---netG global \
+--netG local \
+--ngf 32 \
+--num_D 3 \
 --batchSize 4 \
 --resize_or_crop none \
 --loadSize 1024 \
@@ -22,9 +24,10 @@
 --output_nc 3 \
 --norm batch \
 --data_type 8 \
---name ovia2pixhd_e100_dr2mg \
+--name ovia2pixhd_e100_1024_local_dr2mg \
 --label_nc 0 \
 --no_instance \
 --save_latest_freq 2000 \
 --save_epoch_freq 20 \
---continue_train
+--load_pretrain checkpoints/ovia2pixhd_e100_512_dr2mg/ \
+--niter_fix_global 10

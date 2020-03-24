@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-16 11:29:23
-@LastEditTime: 2020-03-24 12:49:50
+@LastEditTime: 2020-03-22 23:07:01
 @Contact: cgjhaha@qq.com
 @Description: make command for train or testing
 '''
@@ -21,19 +21,15 @@ parser.add_argument('--test_dmo', default=False, action='store_true', help='if g
 parser.add_argument('--epoch', default='latest', type=str, help='test epoch')
 parser.add_argument('--test_num', default=1000, type=int, help='test num')
 parser.add_argument('--continue_train', default=False, action='store_true', help='whether continue train')
+parser.add_argument('--pretrain_512', required=True, help='the pretrain 512 g')
 args = parser.parse_args()
 
 
 def gen_dmo(args):
     gpu_ids = ','.join(str(x) for x in range(args.gpu_num))
-    ckp_name = '{}_e{}_{}_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
-    if args.load_crop_size == 1024:
-        args.resize_or_crop = 'none'
-    else:
-        args.resize_or_crop = 'scale_width'
-
+    ckp_name = '{}_e{}_{}_local_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
     dmo_code = """#!/bin/bash
-#SBATCH --job-name=hd%d%d
+#SBATCH --job-name=l%d%d
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
 #SBATCH --output=/research/dept7/glchen/tmp/log/%s.txt
@@ -44,9 +40,11 @@ def gen_dmo(args):
 --gpu_ids %s \\
 --checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \\
 --dataroot %s \\
---netG global \\
+--netG local \\
+--ngf 32 \\
+--num_D 3 \\
 --batchSize %d \\
---resize_or_crop %s \\
+--resize_or_crop none \\
 --loadSize %d \\
 --fineSize %d \\
 --niter %d \\
@@ -54,16 +52,18 @@ def gen_dmo(args):
 --print_freq %d \\
 --input_nc 3 \\
 --output_nc 3 \\
---norm instance \\
+--norm batch \\
 --data_type 8 \\
 --name %s \\
 --label_nc 0 \\
 --no_instance \\
 --save_latest_freq 2000 \\
---save_epoch_freq 20
+--save_epoch_freq 20 \\
+--load_pretrain %s \\
+--niter_fix_global 10
 """%(args.gpu_num, args.load_crop_size, ckp_name, args.gpu_num, gpu_ids, args.dataroot,
-    args.gpu_num, args.resize_or_crop, args.load_crop_size, args.load_crop_size,
-    args.half_iter, args.half_iter, args.p_freq, ckp_name)
+    args.gpu_num, args.load_crop_size, args.load_crop_size,
+    args.half_iter, args.half_iter, args.p_freq, ckp_name, args.pretrain_512)
 
     if args.continue_train:
         dmo_code += """--continue_train
@@ -75,28 +75,22 @@ def gen_test_dmo(args):
     gpu_ids = ','.join(str(x) for x in range(args.gpu_num))
     # ckp_name = '{}_e{}_dr2mg'.format(args.name, 2*args.half_iter)
     ckp_name = '{}_e{}_{}_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
-    if args.load_crop_size == 1024:
-        args.resize_or_crop = 'none'
-    else:
-        args.resize_or_crop = 'scale_width'
-
     test_code="""/research/dept7/glchen/miniconda3/envs/guojin/bin/python test_mask_green.py \\
 --gpu_ids %s \\
 --checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \\
 --results_dir /research/dept7/glchen/github/pix2pixHD/results \\
 --dataroot %s \\
 --netG global \\
---resize_or_crop %s \\
+--resize_or_crop none \\
 --name %s \\
 --loadSize %d \\
 --fineSize %d \\
 --which_epoch %s \\
 --how_many %d \\
---norm instance \\
+--norm batch \\
 --label_nc 0 \\
---no_instance \\
---zip_and_send
-"""%(gpu_ids, args.dataroot, args.resize_or_crop, ckp_name, args.load_crop_size,
+--no_instance
+"""%(gpu_ids, args.dataroot, ckp_name, args.load_crop_size,
     args.load_crop_size, args.epoch, args.test_num)
     return test_code
 

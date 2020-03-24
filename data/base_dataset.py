@@ -30,11 +30,11 @@ def get_params(opt, size):
     flip = random.random() > 0.5
     return {'crop_pos': (x, y), 'flip': flip}
 
-def get_transform(opt, params, method=Image.BICUBIC, normalize=True):
+def get_transform(opt, params, method=Image.NEAREST, normalize=True):
     transform_list = []
     if 'resize' in opt.resize_or_crop:
         osize = [opt.loadSize, opt.loadSize]
-        transform_list.append(transforms.Scale(osize, method))   
+        transform_list.append(transforms.Resize(osize, method))
     elif 'scale_width' in opt.resize_or_crop:
         transform_list.append(transforms.Lambda(lambda img: __scale_width(img, opt.loadSize, method)))
         
@@ -60,7 +60,7 @@ def get_transform(opt, params, method=Image.BICUBIC, normalize=True):
 def normalize():    
     return transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 
-def __make_power_2(img, base, method=Image.BICUBIC):
+def __make_power_2(img, base, method=Image.NEAREST):
     ow, oh = img.size        
     h = int(round(oh / base) * base)
     w = int(round(ow / base) * base)
@@ -68,7 +68,7 @@ def __make_power_2(img, base, method=Image.BICUBIC):
         return img
     return img.resize((w, h), method)
 
-def __scale_width(img, target_width, method=Image.BICUBIC):
+def __scale_width(img, target_width, method=Image.NEAREST):
     ow, oh = img.size
     if (ow == target_width):
         return img    

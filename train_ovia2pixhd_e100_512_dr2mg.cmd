@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=hd4
+#SBATCH --job-name=hd4512
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
-#SBATCH --output=/research/dept7/glchen/tmp/log/ovia2pixhd_e100_dr2mg.txt
+#SBATCH --output=/research/dept7/glchen/tmp/log/ovia2pixhd_e100_512_dr2mg.txt
 #SBATCH --gres=gpu:4
 
 
@@ -12,19 +12,19 @@
 --dataroot /research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via2/dmo \
 --netG global \
 --batchSize 4 \
---resize_or_crop none \
---loadSize 1024 \
---fineSize 1024 \
+--resize_or_crop scale_width \
+--loadSize 512 \
+--fineSize 512 \
 --niter 50 \
 --niter_decay 50 \
 --print_freq 500 \
 --input_nc 3 \
 --output_nc 3 \
---norm batch \
+--norm instance \
 --data_type 8 \
---name ovia2pixhd_e100_dr2mg \
+--name ovia2pixhd_e100_512_dr2mg \
 --label_nc 0 \
 --no_instance \
 --save_latest_freq 2000 \
 --save_epoch_freq 20 \
---continue_train
+--fp16

@@ -6,12 +6,12 @@ $python flow.py \
 --load_size 2048 \
 --crop_size 1024 \
 --test_ratio 5 \
---max_pervia 3000 \
+--max_pervia 2000 \
 --for_dmo \
 --for_dls \
 --set_byvia \
---gen_via_lists 2 \
---gds_path /research/dept7/glchen/datasets/gds/layouts05frac48via12/gds \
+--gen_via_lists 4 \
+--gds_path /research/dept7/glchen/datasets/gds/ovia4/gds/ \
 --out_folder /research/dept7/glchen/datasets/dlsopc_datasets/viahdsep
 
 

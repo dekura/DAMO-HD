@@ -60,7 +60,7 @@ class BaseModel(torch.nn.Module):
             #network.load_state_dict(torch.load(save_path))
             try:
                 network.load_state_dict(torch.load(save_path))
-            except:   
+            except:
                 pretrained_dict = torch.load(save_path)                
                 model_dict = network.state_dict()
                 try:
@@ -83,9 +83,10 @@ class BaseModel(torch.nn.Module):
                     for k, v in model_dict.items():
                         if k not in pretrained_dict or v.size() != pretrained_dict[k].size():
                             not_initialized.add(k.split('.')[0])
-                    
+
                     print(sorted(not_initialized))
-                    network.load_state_dict(model_dict)                  
+                    network.load_state_dict(model_dict)
 
     def update_learning_rate():
         pass
+
