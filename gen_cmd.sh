@@ -1,17 +1,21 @@
-# phase='train'
-phase='test'
+phase='train'
+# phase='test'
 # base config
 # --------
-# for_good=true
-for_good=false
+for_good=true
+# for_good=false
 # --------
 # user=glchen
-user=wlchen
-# user=xiaolin
+# user=wlchen
+user=xiaolin
 # --------
-vianum=6
+# vianum=6
 # vianum=5
-# vianum=4
+vianum=4
+# --------
+n_layers_D=1
+# --------
+num_D=1
 # --------
 model='pix2pixHD'
 # model='pix2pixL1'
@@ -79,11 +83,22 @@ else
 fi
 
 if [ $for_good = true ]; then
-    file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_good_dr2mg'$ext
+    file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_good_dr2mg'
 else
-    file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_dr2mg'$ext
+    file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_dr2mg'
 fi
 
+if [ $num_D != 2 ]; then
+    file_name=$file_name'_D'$num_D
+fi
+
+if [ $n_layers_D != 3 ]; then
+    file_name=$file_name'd'$n_layers_D
+fi
+
+echo $n_layers_D
+
+file_name=$file_name$ext
 echo $file_name
 
 if [ $phase = "test" ]; then
@@ -111,7 +126,10 @@ else
 --dataroot $dataroot \
 --user $user \
 --train_set_num $train_set_num \
---p_freq $p_freq
+--p_freq $p_freq \
+--num_D $num_D \
+--n_layers_D $n_layers_D \
+--vianum $vianum
 fi
 
 code $file_name

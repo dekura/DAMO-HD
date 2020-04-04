@@ -13,4 +13,5 @@
 --how_many 2000 \
 --norm batch \
 --label_nc 0 \
---no_instance
+--no_instance \
+--zip_and_send

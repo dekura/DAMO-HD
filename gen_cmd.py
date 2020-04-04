@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-16 11:29:23
-@LastEditTime: 2020-03-30 19:59:11
+@LastEditTime: 2020-04-04 16:16:46
 @Contact: cgjhaha@qq.com
 @Description: make command for train or testing
 '''
@@ -23,24 +23,35 @@ parser.add_argument('--epoch', default='latest', type=str, help='test epoch')
 parser.add_argument('--test_num', default=5000, type=int, help='test num')
 parser.add_argument('--continue_train', default=False, action='store_true', help='whether continue train')
 parser.add_argument('--user', default='glchen', type=str, help='python user')
-# parser.add_argument('--n_layers_D', type=int, default=3, help='only used if which_model_netD==n_layers')
-# parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in first conv layer')    
+parser.add_argument('--n_layers_D', type=int, default=3, help='only used if which_model_netD==n_layers')
+parser.add_argument('--num_D',type=int, default=2, help='how many d to use')
+parser.add_argument('--vianum',type=int, default=2, help='the vianum in the training set')
+# parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in first conv layer')
 args = parser.parse_args()
 
 
 def gen_dmo(args):
     gpu_ids = ','.join(str(x) for x in range(args.gpu_num))
+    good_prefix = ''
     if 'good' in args.file_name:
         ckp_name = '{}_e{}_{}_good_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
+        good_prefix = 'g'
     else:
         ckp_name = '{}_e{}_{}_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
+    print(args.num_D)
+    if args.num_D != 2:
+        ckp_name += '_D{}'.format(args.num_D)
+
+    if args.n_layers_D != 3:
+        ckp_name += 'd{}'.format(args.n_layers_D)
+
     if args.load_crop_size == 1024:
         args.resize_or_crop = 'none'
     else:
         args.resize_or_crop = 'scale_width'
 
     if args.model == 'pix2pixHD':
-        model_prefix = 'hd'
+        model_prefix = ''
     elif args.model == 'pix2pixLR':
         model_prefix = 'lr'
     elif args.model == 'pix2pixL1':
@@ -69,7 +80,7 @@ def gen_dmo(args):
         return
 
     dmo_code = """#!/bin/bash
-#SBATCH --job-name=%s%s%d%d
+#SBATCH --job-name=%s%sv%s%s%d%d
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
 #SBATCH --output=%s/%s.txt
@@ -95,15 +106,18 @@ def gen_dmo(args):
 --data_type 8 \\
 --name %s \\
 --max_dataset_size %d \\
+--num_D %d \\
+--n_layers_D %d \\
 --label_nc 0 \\
 --no_instance \\
 --save_latest_freq 2000 \\
 --save_epoch_freq 20 \\
 --verbose
-"""%(user_pre, model_prefix, args.gpu_num, args.load_crop_size, log_dir, ckp_name,
+"""%(user_pre, model_prefix, args.vianum, good_prefix, args.gpu_num, args.load_crop_size, log_dir, ckp_name,
     args.gpu_num, python_inter, gpu_ids, args.dataroot, args.model, args.gpu_num,
     args.resize_or_crop, args.load_crop_size, args.load_crop_size,
-    args.half_iter, args.half_iter, args.p_freq, ckp_name, args.train_set_num)
+    args.half_iter, args.half_iter, args.p_freq, ckp_name, args.train_set_num,
+    args.num_D, args.n_layers_D)
 
     if args.continue_train:
         dmo_code += """--continue_train
@@ -125,7 +139,7 @@ def gen_test_dmo(args):
         args.resize_or_crop = 'scale_width'
 
     if args.model == 'pix2pixHD':
-        model_prefix = 'hd'
+        model_prefix = ''
     elif args.model == 'pix2pixLR':
         model_prefix = 'lr'
     elif args.model == 'pix2pixL1':
