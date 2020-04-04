@@ -19,13 +19,13 @@ class UIModel(BaseModel):
 
         netG_input_nc = opt.label_nc
         if not opt.no_instance:
-            netG_input_nc += 1            
-        if self.use_features:   
-            netG_input_nc += opt.feat_num           
+            netG_input_nc += 1
+        if self.use_features:
+            netG_input_nc += opt.feat_num
 
-        self.netG = networks.define_G(netG_input_nc, opt.output_nc, opt.ngf, opt.netG, 
-                                      opt.n_downsample_global, opt.n_blocks_global, opt.n_local_enhancers, 
-                                      opt.n_blocks_local, opt.norm, gpu_ids=self.gpu_ids)            
+        self.netG = networks.define_G(netG_input_nc, opt.output_nc, opt.ngf, opt.netG,
+                                      opt.n_downsample_global, opt.n_blocks_global, opt.n_local_enhancers,
+                                      opt.n_blocks_local, opt.norm, gpu_ids=self.gpu_ids)
         self.load_network(self.netG, 'G', opt.which_epoch)
 
         print('---------- Networks initialized -------------')
@@ -35,7 +35,7 @@ class UIModel(BaseModel):
         tensor = tensor.view(1, img.size[1], img.size[0], len(img.mode))    
         tensor = tensor.transpose(1, 2).transpose(1, 3).contiguous()
         if normalize:
-            return (tensor.float()/255.0 - 0.5) / 0.5        
+            return (tensor.float()/255.0 - 0.5) / 0.5
         return tensor.float()
 
     def load_image(self, label_path, inst_path, feat_path):

@@ -143,9 +143,9 @@ class LocalEnhancer(nn.Module):
             ### downsample
             ngf_global = ngf * (2**(n_local_enhancers-n))
             model_downsample = [nn.ReflectionPad2d(3), nn.Conv2d(input_nc, ngf_global, kernel_size=7, padding=0), 
-                                norm_layer(ngf_global), nn.ReLU(True),
+                                norm_layer(ngf_global), nn.LeakyReLU(0.2, True),
                                 nn.Conv2d(ngf_global, ngf_global * 2, kernel_size=3, stride=2, padding=1), 
-                                norm_layer(ngf_global * 2), nn.ReLU(True)]
+                                norm_layer(ngf_global * 2), nn.LeakyReLU(0.2, True)]
             ### residual blocks
             model_upsample = []
             for i in range(n_blocks_local):
@@ -153,7 +153,7 @@ class LocalEnhancer(nn.Module):
 
             ### upsample
             model_upsample += [nn.ConvTranspose2d(ngf_global * 2, ngf_global, kernel_size=3, stride=2, padding=1, output_padding=1),
-                               norm_layer(ngf_global), nn.ReLU(True)]
+                               norm_layer(ngf_global), nn.LeakyReLU(0.2, True)]
 
             ### final convolution
             if n == n_local_enhancers:
@@ -185,7 +185,7 @@ class GlobalGenerator(nn.Module):
                  padding_type='reflect'):
         assert(n_blocks >= 0)
         super(GlobalGenerator, self).__init__()
-        activation = nn.ReLU(True)
+        activation = nn.LeakyReLU(0.2, True)
 
         model = [nn.ReflectionPad2d(3), nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0), norm_layer(ngf), activation]
         ### downsample
@@ -212,7 +212,7 @@ class GlobalGenerator(nn.Module):
 
 # Define a resnet block
 class ResnetBlock(nn.Module):
-    def __init__(self, dim, padding_type, norm_layer, activation=nn.ReLU(True), use_dropout=False):
+    def __init__(self, dim, padding_type, norm_layer, activation=nn.LeakyReLU(0.2, True), use_dropout=False):
         super(ResnetBlock, self).__init__()
         self.conv_block = self.build_conv_block(dim, padding_type, norm_layer, activation, use_dropout)
 
@@ -258,18 +258,18 @@ class Encoder(nn.Module):
         self.output_nc = output_nc
 
         model = [nn.ReflectionPad2d(3), nn.Conv2d(input_nc, ngf, kernel_size=7, padding=0), 
-                 norm_layer(ngf), nn.ReLU(True)]
+                 norm_layer(ngf), nn.LeakyReLU(0.2, True)]
         ### downsample
         for i in range(n_downsampling):
             mult = 2**i
             model += [nn.Conv2d(ngf * mult, ngf * mult * 2, kernel_size=3, stride=2, padding=1),
-                      norm_layer(ngf * mult * 2), nn.ReLU(True)]
+                      norm_layer(ngf * mult * 2), nn.LeakyReLU(0.2, True)]
 
         ### upsample
         for i in range(n_downsampling):
             mult = 2**(n_downsampling - i)
             model += [nn.ConvTranspose2d(ngf * mult, int(ngf * mult / 2), kernel_size=3, stride=2, padding=1, output_padding=1),
-                       norm_layer(int(ngf * mult / 2)), nn.ReLU(True)]
+                       norm_layer(int(ngf * mult / 2)), nn.LeakyReLU(0.2, True)]
 
         model += [nn.ReflectionPad2d(3), nn.Conv2d(ngf, output_nc, kernel_size=7, padding=0), nn.Tanh()]
         self.model = nn.Sequential(*model) 

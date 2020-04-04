@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-09 20:19:13
-@LastEditTime: 2020-03-24 12:45:53
+@LastEditTime: 2020-03-28 12:25:31
 @Contact: cgjhaha@qq.com
 @Description: the gds to png flow
 
@@ -26,7 +26,7 @@ from PIL import Image
 from consts import LAYERS, DIRS
 from get_polys import get_polys
 from gen_im import gen_d_m_s, gen_d_s, gen_w
-from gen_dataset import gen_dataset, gen_set_byvia
+from gen_dataset import gen_dataset, gen_set_byvia, gen_set_byvia_from_train
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--name', type=str, default='layout_0.4', help='experiment name')
@@ -38,8 +38,12 @@ parser.add_argument('--for_dmo', default=False, action='store_true', help='for d
 parser.add_argument('--for_dls', default=False, action='store_true', help='for dls')
 parser.add_argument('--set_byvia', default=False, action='store_true', help='whether gen set by via')
 parser.add_argument('--gen_via_lists', type=str, default='1,2', help='which vianum subdataset to gen, 1,2,3,4')
+parser.add_argument('--gen_seen_set', default=False, action='store_true', help='if true, get test set from train set')
 parser.add_argument('--gds_path', type=str, required=True, help='the input gds path')
 parser.add_argument('--out_folder', type=str, required=True, help='output data folder')
+parser.add_argument('--gen_good', default=False, action='store_true', help='if gen_good, will get info from sqldb to gen better epe dataset')
+parser.add_argument('--sqldb_path', default='./', type=str, help='the sqldb path for one via gen')
+parser.add_argument('--epebar', default=0.6 , type=float, help='epebar for good dataset')
 # out_folder/dmo/trainA
 # out_folder/dls/trainA
 args = parser.parse_args()
@@ -159,8 +163,12 @@ def main():
     makedir(args.out_folder)
     if args.set_byvia:
         set_byvia = gen_set_byvia(args)
+        # set_byvia = gen_set_byvia_from_train(args)
         for via_num, sets in set_byvia.items():
-            args._root_folder = os.path.join(args.out_folder, 'via{}'.format(via_num))
+            if args.gen_good:
+                args._root_folder = os.path.join(args.out_folder, 'via{}_good'.format(via_num))
+            else:
+                args._root_folder = os.path.join(args.out_folder, 'via{}'.format(via_num))
             prepare_dirs(args)
             test_set, train_set = sets
             gen_data(test_set, 'test', args)

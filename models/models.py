@@ -7,6 +7,18 @@ def create_model(opt):
             model = Pix2PixHDModel()
         else:
             model = InferenceModel()
+    elif opt.model == 'pix2pixLR':
+        from .pix2pixLR_model import Pix2PixHDModel, InferenceModel
+        if opt.isTrain:
+            model = Pix2PixHDModel()
+        else:
+            model = InferenceModel()
+    elif opt.model == 'pix2pixL1':
+        from .pix2pixL1_model import Pix2PixHDModel, InferenceModel
+        if opt.isTrain:
+            model = Pix2PixHDModel()
+        else:
+            model = InferenceModel()
     else:
     	from .ui_model import UIModel
     	model = UIModel()

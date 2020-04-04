@@ -1,20 +1,54 @@
-phase='train'
-# phase='test'
-
+# phase='train'
+phase='test'
 # base config
-vianum=2
-name='ovia'$vianum'pixhd'
-dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via'$vianum'/dmo'
-load_crop_size=512
+# --------
+# for_good=true
+for_good=false
+# --------
+# user=glchen
+user=wlchen
+# user=xiaolin
+# --------
+vianum=6
+# vianum=5
+# vianum=4
+# --------
 model='pix2pixHD'
+# model='pix2pixL1'
+# --------
+load_crop_size=1024
+# load_crop_size=512
+# --------
+train_set_num=2500
 epoch=100
 half_iter=`expr $epoch / 2`
-p_freq=500
+p_freq=100
+
+if [ $for_good = true ]; then
+    dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via'$vianum'_good/dmo'
+else
+    dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via'$vianum'/dmo'
+fi
 
 
 ##### test phases ####
+# --------
+test_epoch=latest
 # test_epoch=100
-# test_num=10
+# --------
+test_num=500
+# test_num=2000
+# --------
+
+if [ $model = "pix2pixHD" ]; then
+    name='ovia'$vianum'pixhd'
+elif [ $model = 'pix2pixLR' ]; then
+    name='ovia'$vianum'pixlr'
+elif [ $model = 'pix2pixL1' ]; then
+    name='ovia'$vianum'pixl1'
+else
+    echo 'no model found'
+fi
 
 # if [ $load_crop_size = 1024 ]; then
 #     resize_or_crop='none'
@@ -32,9 +66,24 @@ fi
 
 # for training test
 # ext='.sh'
-# gpu_num=4
+# gpu_num=1
 
-file_name=$phase'_'$name'_e'$epoch'_'$load_crop_size'_dr2mg'$ext
+if [ $user = 'glchen' ]; then
+    user_pre='gl'
+elif [ $user = 'wlchen' ]; then
+    user_pre='wl'
+elif [ $user = 'xiaolin' ]; then
+    user_pre='xl'
+else
+    echo 'no user found'
+fi
+
+if [ $for_good = true ]; then
+    file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_good_dr2mg'$ext
+else
+    file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_dr2mg'$ext
+fi
+
 echo $file_name
 
 if [ $phase = "test" ]; then
@@ -48,7 +97,8 @@ if [ $phase = "test" ]; then
 --half_iter $half_iter \
 --test_num $test_num \
 --dataroot $dataroot \
---epoch $test_epoch
+--epoch $test_epoch \
+--user $user
 
 else
     python gen_cmd.py \
@@ -58,7 +108,10 @@ else
 --load_crop_size $load_crop_size \
 --model $model \
 --half_iter $half_iter \
---dataroot $dataroot
+--dataroot $dataroot \
+--user $user \
+--train_set_num $train_set_num \
+--p_freq $p_freq
 fi
 
 code $file_name
