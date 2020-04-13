@@ -39,4 +39,5 @@ test/data/legacy_serialized.pt
 *.DS_Store
 *~
 .vscode/
-
+*.gds
+*.db
