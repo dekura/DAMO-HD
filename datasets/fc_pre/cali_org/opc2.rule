@@ -1,0 +1,71 @@
+//Calibre rule for opc
+//edited by Nojima
+
+LAYOUT SYSTEM GDSII 
+LAYOUT PATH     "results/mbsraf_out.gds"
+LAYOUT PRIMARY "TOP"
+DRC RESULTS DATABASE "results/opcout2.oas" OASIS
+DRC SUMMARY REPORT   "results/opcout2.rep"
+
+PRECISION 1000
+DRC MAXIMUM RESULTS ALL
+DRC MAXIMUM VERTEX 4000
+
+LAYER MAP 0    datatype 0 1000 LAYER target        1000
+LAYER MAP 1    datatype 0 1001 LAYER number        1001
+LAYER MAP 10   datatype 0 1002 LAYER lay_biased    1002
+LAYER MAP 102  datatype 0 1003 LAYER lay_sraf      1003
+
+OUT_target     {COPY target    } DRC CHECK MAP OUT_target      0  0
+OUT_number     {COPY number    } DRC CHECK MAP OUT_number      1  0
+OUT_opc        {COPY opc_out   } DRC CHECK MAP OUT_opc         10  0
+OUT_sraf       {COPY lay_sraf    } DRC CHECK MAP OUT_sraf        100  0
+OUT_DUMMYOPC   {COPY lay_biased    } DRC CHECK MAP OUT_DUMMYOPC        20  0
+
+opc_out            = LITHO DENSEOPC FILE "nmopc.in" target lay_sraf MAP opc_out
+
+LITHO FILE nmopc.in [/*
+
+#progress_meter off
+tilemicrons 40
+
+# model definition
+modelpath .:models
+
+layer target
+layer lay_sraf
+
+simulation_consistency 2
+
+denseopc_options nmopc_opt {
+
+    version 1
+
+    layer target        opc   mask_layer 0
+    layer lay_sraf      sraf  mask_layer 0
+
+    image models
+
+    fragment_min 0.060
+    fragment_max 0.500
+    fragment_corner
+    fragment_inter OFF
+
+    algorithm          2
+    controller         off
+    step_size          0.001
+    max_iter_movement  0.004
+    max_opc_move       0.080
+    feedback          -0.5 -0.4 -0.3 
+
+    mrc_rule external target target { use 0.025 euclidean }
+    mrc_rule internal target target { use 0.045 opposite  }
+
+    NEWTAG all target -out tag_all
+    OPC_ITERATION 20
+}
+
+setlayer opc_out  = denseopc target lay_sraf MAP target OPTIONS nmopc_opt
+
+*/]
+

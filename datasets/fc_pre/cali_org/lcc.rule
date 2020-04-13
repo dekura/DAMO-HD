@@ -1,0 +1,62 @@
+LAYOUT SYSTEM OASIS
+LAYOUT PATH    "results/opcout1.oas"
+LAYOUT PRIMARY "TOP"
+DRC RESULTS DATABASE "results/lccout1.oas" OASIS
+DRC SUMMARY REPORT   "results/lccout1.rep"
+
+PRECISION 1000
+DRC MAXIMUM RESULTS ALL
+DRC MAXIMUM VERTEX 4000
+
+LAYER MAP 0    datatype 0 1000 LAYER target        1000
+LAYER MAP 1    datatype 0 1001 LAYER number        1001
+LAYER MAP 10   datatype 0 1002 LAYER lay_OPC    1002
+LAYER MAP 100  datatype 0 1003 LAYER lay_sraf      1003
+
+OUT_target     {COPY target    } DRC CHECK MAP OUT_target      0  0
+OUT_number     {COPY number    } DRC CHECK MAP OUT_number      1  0
+OUT_opc        {COPY lay_OPC   } DRC CHECK MAP OUT_opc         10  0
+OUT_sraf       {COPY lay_sraf    } DRC CHECK MAP OUT_sraf        100  0
+
+SIM_BEST = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP SIM_BEST
+PV_BAND  = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP PV_BAND
+
+nominal_contour { copy SIM_BEST } DRC CHECK MAP nominal_contour 200 0
+pv_band         { copy PV_BAND  } DRC CHECK MAP pv_band         201 0
+
+DRC PRINT AREA pv_band
+
+LITHO FILE opcv.in [/*
+
+progress_meter off
+tilemicrons 40
+
+# model definition
+modelpath .:./model
+
+layer target
+layer lay_OPC
+layer lay_sraf
+
+image_options LccSimBest {
+        litho_model models
+        layer lay_OPC  visible mask_layer 0
+        layer lay_sraf visible mask_layer 0
+}
+
+simulation_consistency 2
+
+setlayer SIM_BEST        = image LccSimBest dose 1
+setlayer contour1        = image LccSimBest dose 1.03 focus 30nm
+setlayer contour2        = image LccSimBest dose 0.97 focus 30nm
+setlayer contour3        = image LccSimBest dose 1.03 
+setlayer contour4        = image LccSimBest dose 0.97 
+setlayer contour5        = image LccSimBest dose 1.03 focus -30nm
+setlayer contour6        = image LccSimBest dose 0.97 focus -30nm
+
+image_set contours = list SIM_BEST contour1 contour2 contour3 contour4 contour5 contour6
+setlayer PV_BAND = not contours.outer contours.inner
+
+*/]
+
+

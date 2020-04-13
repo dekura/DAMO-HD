@@ -1,21 +1,24 @@
-phase='train'
-# phase='test'
+# phase='train'
+phase='test'
 # base config
 # --------
 for_good=true
 # for_good=false
 # --------
-# user=glchen
+user=glchen
 # user=wlchen
-user=xiaolin
+# user=xiaolin
 # --------
-# vianum=6
+vianum=6
 # vianum=5
-vianum=4
+# vianum=4
+# vianum=3
+# vianum=2
 # --------
 n_layers_D=1
 # --------
-num_D=1
+num_D=2
+# num_D=1
 # --------
 model='pix2pixHD'
 # model='pix2pixL1'
@@ -39,8 +42,9 @@ fi
 # --------
 test_epoch=latest
 # test_epoch=100
+# test_epoch=60
 # --------
-test_num=500
+test_num=1000
 # test_num=2000
 # --------
 
@@ -88,9 +92,9 @@ else
     file_name=$user_pre'_'$phase'_'$name'_e'$epoch'_'$load_crop_size'_dr2mg'
 fi
 
-if [ $num_D != 2 ]; then
-    file_name=$file_name'_D'$num_D
-fi
+
+file_name=$file_name'_D'$num_D
+
 
 if [ $n_layers_D != 3 ]; then
     file_name=$file_name'd'$n_layers_D
@@ -113,7 +117,10 @@ if [ $phase = "test" ]; then
 --test_num $test_num \
 --dataroot $dataroot \
 --epoch $test_epoch \
---user $user
+--user $user \
+--num_D $num_D \
+--n_layers_D $n_layers_D \
+--vianum $vianum
 
 else
     python gen_cmd.py \

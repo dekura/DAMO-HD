@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-16 11:29:23
-@LastEditTime: 2020-04-04 16:16:46
+@LastEditTime: 2020-04-06 16:33:20
 @Contact: cgjhaha@qq.com
 @Description: make command for train or testing
 '''
@@ -38,9 +38,9 @@ def gen_dmo(args):
         good_prefix = 'g'
     else:
         ckp_name = '{}_e{}_{}_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
-    print(args.num_D)
-    if args.num_D != 2:
-        ckp_name += '_D{}'.format(args.num_D)
+
+    # if args.num_D != 2:
+    ckp_name += '_D{}'.format(args.num_D)
 
     if args.n_layers_D != 3:
         ckp_name += 'd{}'.format(args.n_layers_D)
@@ -133,6 +133,12 @@ def gen_test_dmo(args):
         ckp_name = '{}_e{}_{}_good_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
     else:
         ckp_name = '{}_e{}_{}_dr2mg'.format(args.name, 2*args.half_iter, args.load_crop_size)
+
+    # if args.num_D != 2:
+    ckp_name += '_D{}'.format(args.num_D)
+
+    if args.n_layers_D != 3:
+        ckp_name += 'd{}'.format(args.n_layers_D)
     if args.load_crop_size == 1024:
         args.resize_or_crop = 'none'
     else:

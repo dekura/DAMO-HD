@@ -1,0 +1,18 @@
+version 10
+engine rapidTCC
+opticalsystem 0.193 1.35
+defocuslevels 1 0.08 0.02
+magnification 4.
+approxorder 60
+forceKernelSymmetry 1
+hoodpix 2.560
+kerngrid 0.005
+illumtype COMPOSITE
+ANNULAR SHARP weight 1 sigma 0.9 sigma_in 0.6
+film 0.12 1.7 -0.03 "300 nm Resist"
+film 0.05 1.6 -0.45 "70 nm BARC"
+film 0.35 1.44 -0.3 "sub1"
+substrate 0.88 -2.7
+beamfocus 0.14
+vectormodelflag 1
+ambient 1.44

@@ -1,0 +1,13 @@
+Illumination:
+ SoftAnnular, 193nm, 1.35NA, o0.90/i0.60
+ Defocus -60 -30 0 30 60
+
+Stack:   thickness, n, k
+ Resist: 120nm, 1.70, 0.03
+ BARC:   50nm,  1.60, 0.45
+ Sub1:   350nm, 1.44, 0.30
+
+Anchor Pattern:
+ Mask 70nm(140pitch) --> Resist 70nm
+
+Threshold : 0.086

@@ -1,0 +1,80 @@
+LAYOUT SYSTEM OASIS
+LAYOUT PATH    "out/opcout1.oas"
+LAYOUT PRIMARY "TOP"
+DRC RESULTS DATABASE "out/lccout1.oas" OASIS APPEND _new
+DRC SUMMARY REPORT   "out/lccout1.rep"
+
+PRECISION 1000
+DRC MAXIMUM RESULTS ALL
+DRC MAXIMUM VERTEX 4000
+
+LAYER MAP 0    datatype 0 1000 LAYER target        1000
+LAYER MAP 1    datatype 0 1001 LAYER number        1001
+LAYER MAP 10   datatype 0 1002 LAYER lay_OPC       1002
+LAYER MAP 100  datatype 0 1003 LAYER lay_sraf      1003
+
+OUT_target     {COPY target    } DRC CHECK MAP OUT_target      0    0
+OUT_number     {COPY number    } DRC CHECK MAP OUT_number      1    0
+OUT_opc        {COPY lay_OPC   } DRC CHECK MAP OUT_opc         10   0
+OUT_sraf       {COPY lay_sraf  } DRC CHECK MAP OUT_sraf        100  0
+
+SIM_BEST = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP SIM_BEST
+PV_BAND  = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP PV_BAND
+EPEin    = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP EPEin
+EPEout   = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP EPEout
+EPEbest  = LITHO OPCVERIFY FILE opcv.in target lay_OPC lay_sraf MAP EPEbest
+
+tmp:0 = EXTENTS target CENTERS 0.030
+tmp:1 = EXPAND EDGE (ANGLE tmp:0 == 0) OUTSIDE BY 0.05
+tmp:2 = EXPAND EDGE (ANGLE tmp:0 == 90) OUTSIDE BY 0.05
+tmp:3 = AND EPEbest (OR tmp:1 tmp:2)
+EPEbin  = AND tmp:3 target
+EPEbout = NOT tmp:3 target
+
+nominal_contour { copy SIM_BEST } DRC CHECK MAP nominal_contour 200 0 APPEND _new
+pv_band         { copy PV_BAND  } DRC CHECK MAP pv_band         201 0 APPEND _new
+epein            { copy EPEin     } DRC CHECK MAP epein         ASCII epeout.db
+epeout           { not EPEout target    } DRC CHECK MAP epeout  ASCII epeout.db
+epebestin        { copy EPEbin  } DRC CHECK MAP epebestin  ASCII epeout.db
+epebestout       { copy EPEbout } DRC CHECK MAP epebestout ASCII epeout.db
+ntarget          { copy target } DRC CHECK MAP ntarget ASCII epeout.db
+
+DRC PRINT AREA pv_band
+
+LITHO FILE opcv.in [/*
+
+progress_meter off
+tilemicrons 40
+
+# model definition
+modelpath .:./models
+
+layer target
+layer lay_OPC
+layer lay_sraf
+
+image_options LccSimBest {
+        litho_model models
+        layer lay_OPC  visible mask_layer 0
+        layer lay_sraf visible mask_layer 0
+}
+
+simulation_consistency 2
+
+setlayer SIM_BEST        = image LccSimBest dose 1
+setlayer contour1        = image LccSimBest dose 1.03 focus 30nm
+setlayer contour2        = image LccSimBest dose 0.97 focus 30nm
+setlayer contour3        = image LccSimBest dose 1.03 
+setlayer contour4        = image LccSimBest dose 0.97 
+setlayer contour5        = image LccSimBest dose 1.03 focus -30nm
+setlayer contour6        = image LccSimBest dose 0.97 focus -30nm
+
+image_set contours = list SIM_BEST contour1 contour2 contour3 contour4 contour5 contour6
+setlayer PV_BAND = not contours.outer contours.inner
+setlayer EPEin = measure_epe contours.inner target function min magnitude epe_spacing .001 min_featsize .035 max_edgelen .1
+setlayer EPEout = measure_epe contours.outer target function max epe_spacing .001 min_featsize .035 max_edgelen .1
+setlayer EPEbest = measure_epe contours.nominal target function max epe_spacing .001 min_featsize .035 max_edgelen .1
+
+*/]
+
+ 

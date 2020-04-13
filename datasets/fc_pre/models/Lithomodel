@@ -1,0 +1,12 @@
+version 1
+resist resist.mod
+image_threshold 0.086
+mask 0 {
+  optical na135sig90sigin60
+  optical na135sig90sigin60def-60 focus -60nm
+  optical na135sig90sigin60def-30 focus -30nm
+  optical na135sig90sigin60defp30 focus 30nm
+  optical na135sig90sigin60defp60 focus 60nm
+  background atten 0.06
+  mask_layer 0 TRANS clear
+}

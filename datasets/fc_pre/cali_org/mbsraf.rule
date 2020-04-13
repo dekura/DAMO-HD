@@ -1,0 +1,105 @@
+// edited by Nojima 20150710
+
+LAYOUT WINDOW 0 50 100 60
+LAYOUT WINDOW CLIP YES
+
+//--- INPUT LAYOUT ---
+LAYOUT SYSTEM GDSII
+LAYOUT PATH "inp/140nPitch.gds"
+LAYOUT PRIMARY "TOP"
+
+//--- OUTPUT ---
+DRC RESULTS DATABASE "results/mbsraf_out.gds" GDSII
+PRECISION 1000
+
+//--- misc ---
+DRC SUMMARY REPORT   "results/mbsraf.rep"
+DRC MAXIMUM VERTEX 199
+DRC MAXIMUM RESULTS all
+UNIT LENGTH U
+RESOLUTION 1
+
+LAYOUT ERROR ON INPUT YES
+
+LAYER target 0
+LAYER number 1
+LAYER MAP 3 DATATYPE 0  1003 layer marker 1003
+
+target { copy target } DRC CHECK MAP target 0 0
+number { copy number } DRC CHECK MAP number 1 0
+marker { copy marker } DRC CHECK MAP marker 3 0
+DRC MAP TEXT YES
+
+Con1       = EXT [target] < 0.200 OPPOSITE EXTENDED 0.25 
+Con2       =  NOT TOUCH EDGE target Con1  
+dummy_opc  = OR (EXPAND EDGE Con2 OUTSIDE by 0.010 CORNER FILL) target
+
+dummy_opc { copy dummy_opc } DRC CHECK MAP dummy_opc  10 0
+
+mbsraf_sample = RET MBSRAF target dummy_opc FILE mbsraf.in MAP sb_sample
+mbsraf_sample { copy mbsraf_sample } DRC CHECK MAP mbsraf_sample 100 00
+
+mask_image { OR mbsraf_sample dummy_opc } DRC CHECK MAP mask_image 101 00
+
+//sb_sample_debug { RET MBSRAF target dummy_opc FILE mbsraf.in MAP sb_sample_debug }
+//DRC CHECK MAP sb_sample_debug 101 0
+//sb_sample_seed  { RET MBSRAF target dummy_opc FILE mbsraf.in MAP sb_sample_seed }
+//DRC CHECK MAP sb_sample_seed 102 0
+
+
+LITHO FILE mbsraf.in [/*
+processing_mode hierarchical
+progress_meter off
+
+modelpath .:./model
+
+layer sraf_target 
+layer dummy_opc   
+
+tilemicrons 50
+
+simulation_consistency 2
+
+image_options mbSRAF_LithoModel {
+	litho_model models
+	layer dummy_opc visible
+}
+
+
+sraf_options srafopt {
+correctionlayer dummy_opc
+image_options mbSRAF_LithoModel
+
+ mode            nearestno45
+ minwidth        0.030
+ extension       0.020
+# maxlength       0.055
+ minlength 	0.08
+ minsquarelength 0.45
+ minoffset       0.05
+ maxoffset       1.0
+ minfeaturespace 0.15
+ collecttype     0
+ cornerpref      all
+ peaktype        3dir
+ centerwidth     0.030
+
+#localmaxgradient width 0.030 mode nearestno45 squarewidth 0.045 prior 1
+localmaxgradient width 0.030 mode nearestno45 prior 1
+
+pw_condition nominal dose 1 weight 1
+pw_condition cond1 dose 1.03 focus 30nm weight 1
+pw_condition cond2 dose 0.97 focus 30nm weight 1
+pw_condition cond3 dose 1.03 focus -30nm weight 1
+pw_condition cond4 dose 0.97 focus -30nm weight 1
+
+}
+
+setlayer sb_sample = mbsraf sraf_target OPTIONS srafopt
+setlayer sb_sample_debug = mbsraf sb_sample candidates 1
+setlayer sb_sample_seed  = mbsraf sb_sample seedpixels 1
+
+
+
+*/]
+

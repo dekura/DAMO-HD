@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=xlv4g41024
+#SBATCH --job-name=xlv4gD141024
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
 #SBATCH --output=/research/d2/xiaolin/tmp/log/ovia4pixhd_e100_1024_good_dr2mg_D1d1.txt
@@ -31,4 +31,5 @@
 --no_instance \
 --save_latest_freq 2000 \
 --save_epoch_freq 20 \
---verbose
+--verbose \
+--continue_train
