@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-12 09:02:31
-@LastEditTime: 2020-04-13 16:14:12
+@LastEditTime: 2020-04-13 17:41:04
 @Contact: cgjhaha@qq.com
 @Description: class of shapes
 '''
@@ -25,6 +25,15 @@ def poly_to_rect(poly):
     point2 = np.array([xr, yu])
     return (point1, point2)
 
+def center_to_rect(center):
+    xl = center[0] - (VIA_WH/2)/PRECISION
+    xr = xl + VIA_WH/PRECISION
+    yd = center[1] - (VIA_WH/2)/PRECISION
+    yu = yd + VIA_WH/PRECISION
+    point1 = np.array([xl, yd])
+    point2 = np.array([xr, yu])
+    return (point1, point2)
+
 class FINAL_RECT:
     'the final cut rect'
     def __init__(self, center, vias):
@@ -37,9 +46,19 @@ class FINAL_RECT:
         point1 = np.array([self.left, self.down])
         point2 = np.array([self.right, self.up])
         self.rect = (point1, point2)
+        # self.via_rects = []
         self.vias = vias
         self.opc_rects = []
         self.sraf_rects = []
+        # self.via_center2rects()
+
+    def via_center2rects(self):
+        via_rects = []
+        for center in self.vias:
+            rect = center_to_rect(center)
+            via_rects.append(rect)
+        # self.via_rects = via_rects
+        return via_rects
 
     def get_opc_rects(self, opc_polys, opc_centers):
         dis = (VIA_WH/2)/PRECISION

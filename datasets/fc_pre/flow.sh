@@ -1,12 +1,13 @@
 ###
  # @Author: Guojin Chen
  # @Date: 2020-04-13 09:44:13
- # @LastEditTime: 2020-04-13 09:48:48
+ # @LastEditTime: 2020-04-13 17:45:10
  # @Contact: cgjhaha@qq.com
  # @Description: flow shell
 ###
 
 python=/research/dept7/glchen/miniconda3/envs/gdspy/bin/python
+# python=/usr/local/miniconda3/envs/gdspy/bin/python
 
 $python flow.py \
 --name ispd19test \

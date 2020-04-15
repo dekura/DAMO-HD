@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-11 15:03:02
-@LastEditTime: 2020-04-12 18:14:10
+@LastEditTime: 2020-04-13 17:11:38
 @Contact: cgjhaha@qq.com
 @Description: some consts
 '''
@@ -11,7 +11,8 @@ LAYERS = {
     'mask': 1,
     'sraf': 2,
     'wafer': 200,
-    'dbscan': 400
+    'dbscan': 400,
+    'final_win': 800
 }
 
 DIRS = ['train_A', 'train_B', 'test_A', 'test_B' , 'testbg']
@@ -27,3 +28,5 @@ VIA_WH = 70
 TOTAY_XY = 700
 # the opc window size
 VIA_WIN_WH = 1024
+
+GDS_WIN_WH = 2048
