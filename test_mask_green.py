@@ -120,6 +120,13 @@ def make_targz(output_filename, source_dir):
     with tarfile.open(output_filename, "w:gz") as tar:
         tar.add(source_dir, arcname=os.path.basename(source_dir))
 
+if opt.is_fc:
+    fc_p = opt.fc_p
+    res_dir_name = os.path.join(opt.results_dir, opt.name)
+    res_dir_name_fc = os.path.join(opt.results_dir, opt.name+fc_p)
+    os.rename(res_dir_name, res_dir_name_fc)
+    opt.name = opt.name+fc_p
+
 if opt.zip_and_send:
     res_dir = os.path.join(opt.results_dir, opt.name)
     tarname = os.path.join(opt.results_dir, '{}.tar.gz'.format(opt.name))

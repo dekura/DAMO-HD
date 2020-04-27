@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-14 20:06:06
-@LastEditTime: 2020-03-28 12:30:03
+@LastEditTime: 2020-04-18 20:50:54
 @Contact: cgjhaha@qq.com
 @Description: get train test dataset by via
 '''
@@ -93,7 +93,8 @@ def gen_set_byvia(args):
             continue
         print('via num {}: has {} data'.format(via_num, len(via_num_list)))
         max_pervia = min(len(via_num_list), args.max_pervia)
-        via_num_list = via_num_list[:max_pervia]
+        # via_num_list = via_num_list[:max_pervia]
+        via_num_list = random.sample(via_num_list, max_pervia)
         print('now set via num {}: to be {} data'.format(via_num, max_pervia))
         if args.gen_seen_set:
             # via_test = via_num_list[:test_num]

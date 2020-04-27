@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-09 20:19:13
-@LastEditTime: 2020-04-12 19:57:06
+@LastEditTime: 2020-04-15 09:30:09
 @Contact: cgjhaha@qq.com
 @Description: the gds to png flow
 
@@ -18,6 +18,7 @@ gds to png:
 
 import os
 import glob
+import time
 import tarfile
 import argparse
 import numpy as np
@@ -44,10 +45,16 @@ parser.add_argument('--out_folder', type=str, required=True, help='output data f
 parser.add_argument('--gen_good', default=False, action='store_true', help='if gen_good, will get info from sqldb to gen better epe dataset')
 parser.add_argument('--sqldb_path', default='./', type=str, help='the sqldb path for one via gen')
 parser.add_argument('--epebar', default=0.6 , type=float, help='epebar for good dataset')
+parser.add_argument('--gen_only_test', default=False, action='store_true', help='whether gen only test set')
 # out_folder/dmo/trainA
 # out_folder/dls/trainA
 args = parser.parse_args()
 
+if args.gen_only_test:
+    DIRS = ['test_A', 'test_B' , 'testbg']
+    args.test_ratio = 1
+    args.gen_seen_set = False
+    args.gen_good = False
 
 
 def save_im(imA, imB, dataset_type, sub_type, item_name, args):
@@ -132,7 +139,7 @@ def gen_data(dataset, dataset_type, args):
 
 def makedir(path):
     if not os.path.exists(path):
-        os.mkdir(path)
+        os.makedirs(path)
 
 def prepare_subdirs(root_folder, sub_type):
     sub_path = os.path.join(root_folder, sub_type)
@@ -158,6 +165,7 @@ def prepare_dirs(args):
 
 def main():
     print(args)
+    t = time.time()
     if not os.path.exists(args.gds_path):
         raise FileNotFoundError
     makedir(args.out_folder)
@@ -173,14 +181,19 @@ def main():
             test_set, train_set = sets
             gen_data(test_set, 'test', args)
             gen_data(test_set, 'testbg', args)
-            gen_data(train_set, 'train', args)
+            if not args.gen_only_test:
+                gen_data(train_set, 'train', args)
     else:
         args._root_folder = args.out_folder
         prepare_dirs(args)
         test_set, train_set = gen_dataset(args)
         gen_data(test_set, 'test', args)
         gen_data(test_set, 'testbg', args)
-        gen_data(train_set, 'train', args)
+        if not args.gen_only_test:
+            gen_data(train_set, 'train', args)
+
+    elapsed = time.time() - t
+    print('total running time: {}'.format(elapsed))
 
 if __name__ == '__main__':
     main()

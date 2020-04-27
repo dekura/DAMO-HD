@@ -1,24 +1,31 @@
-# phase='train'
-phase='test'
+phase='train'
+# phase='test'
 # base config
 # --------
-for_good=true
-# for_good=false
+# for_good=true
+for_good=false
 # --------
 user=glchen
 # user=wlchen
 # user=xiaolin
 # --------
-vianum=6
+# vianum=6
 # vianum=5
 # vianum=4
-# vianum=3
+vianum=3
 # vianum=2
+# vianum=1
+# --------
+# is_rect=false
+is_rect=true
+# --------
+is_ispdrect=false
+# is_ispdrect=true
 # --------
 n_layers_D=1
 # --------
-num_D=2
 # num_D=1
+num_D=2
 # --------
 model='pix2pixHD'
 # model='pix2pixL1'
@@ -26,16 +33,15 @@ model='pix2pixHD'
 load_crop_size=1024
 # load_crop_size=512
 # --------
-train_set_num=2500
 epoch=100
+# epoch=50
+# --------
+save_epoch_freq=50
+# --------
+train_set_num=2000
+
 half_iter=`expr $epoch / 2`
 p_freq=100
-
-if [ $for_good = true ]; then
-    dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via'$vianum'_good/dmo'
-else
-    dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via'$vianum'/dmo'
-fi
 
 
 ##### test phases ####
@@ -47,13 +53,76 @@ test_epoch=latest
 test_num=1000
 # test_num=2000
 # --------
+# is_fc=true
+is_fc=false
+# --------
+is_fc5=true
+# is_fc5=false
+# --------
+
+if [ $is_rect = true ]; then
+    root_folder='recthdsep'
+else
+    root_folder='viahdsep'
+fi
+
+if [ $is_ispdrect = true ]; then
+    root_folder='ispdrecthdsep'
+fi
+
+fc_p=none
+results_dir='results'
+
+if [ $phase = "test" ]; then
+    if [ $is_fc = true ]; then
+        root_folder='fcrecthdsep'
+        # for_good=false
+        fc_p='_fc'
+        results_dir='fc_results'
+        test_num=10000
+    fi
+
+    if [ $is_fc5 = true ]; then
+        root_folder='fc5recthdsep'
+        # for_good=false
+        fc_p='_fc5'
+        results_dir='fc5_results'
+        test_num=10000
+    fi
+fi
+
+
+
+results_root='/research/dept7/glchen/github/pix2pixHD/'$results_dir
+
+if [ $for_good = true ]; then
+    dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/'$root_folder'/via'$vianum'_good/dmo'
+    if [ $phase = "test" ]; then
+        if [[ $is_fc5 = true || $is_fc = true ]]; then
+            dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/'$root_folder'/via'$vianum'/dmo'
+        fi
+    fi
+else
+    dataroot='/research/dept7/glchen/datasets/dlsopc_datasets/'$root_folder'/via'$vianum'/dmo'
+fi
+
+
+if [ $is_rect = true ]; then
+    rectname='orect'
+else
+    rectname='ovia'
+fi
+
+if [ $is_ispdrect = true ]; then
+    rectname='oisrect'
+fi
 
 if [ $model = "pix2pixHD" ]; then
-    name='ovia'$vianum'pixhd'
+    name=$rectname$vianum'pixhd'
 elif [ $model = 'pix2pixLR' ]; then
-    name='ovia'$vianum'pixlr'
+    name=$rectname$vianum'pixlr'
 elif [ $model = 'pix2pixL1' ]; then
-    name='ovia'$vianum'pixl1'
+    name=$rectname$vianum'pixl1'
 else
     echo 'no model found'
 fi
@@ -102,6 +171,10 @@ fi
 
 echo $n_layers_D
 
+if [[ $fc_p != none ]]; then
+    file_name=$file_name$fc_p
+fi
+
 file_name=$file_name$ext
 echo $file_name
 
@@ -120,7 +193,9 @@ if [ $phase = "test" ]; then
 --user $user \
 --num_D $num_D \
 --n_layers_D $n_layers_D \
---vianum $vianum
+--vianum $vianum \
+--fc_p $fc_p \
+--results_root $results_root
 
 else
     python gen_cmd.py \
@@ -136,7 +211,8 @@ else
 --p_freq $p_freq \
 --num_D $num_D \
 --n_layers_D $n_layers_D \
---vianum $vianum
+--vianum $vianum \
+--save_epoch_freq $save_epoch_freq
 fi
 
 code $file_name

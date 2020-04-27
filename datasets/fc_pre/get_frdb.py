@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 13:28:54
-@LastEditTime: 2020-04-13 16:30:00
+@LastEditTime: 2020-04-25 23:05:09
 @Contact: cgjhaha@qq.com
 @Description: using the k-means++ to cut the window
 '''
@@ -19,6 +19,12 @@ VIA_LAYER = LAYERS['design']
 OPC_LAYER = LAYERS['mask']
 SRAF_LAYER = LAYERS['sraf']
 MERGE_LAYER = LAYERS['dbscan']
+
+def logtxt(info,args):
+    txt_name = args.name + '_log.txt'
+    txt_path = os.path.join(args.log_folder, txt_name)
+    with open(txt_path, mode='a+') as f:
+        f.write(info)
 '''
 get opc polys
 '''
@@ -50,9 +56,9 @@ def get_opc_sraf_polys(gds_path):
 '''
 good cut:
 1. the via belong class i must in the 800 window
-2. via <= 6
+2. via <= max_via_in_win
 '''
-def check_good_cut(mr, nc, y_pred):
+def check_good_cut(mr, nc, y_pred, args):
     for label, cc in enumerate(y_pred.cluster_centers_):
         via_to_label_index = np.where(y_pred.labels_ == label)
         via_centers = mr.vias[via_to_label_index]
@@ -64,7 +70,7 @@ def check_good_cut(mr, nc, y_pred):
         (via_centers[:, 1] > down) & (via_centers[:, 1] < up))
         good_vias = via_centers[pos]
         # print(len(good_vias))
-        if (len(good_vias) != len(via_centers)) or (len(good_vias) > 6):
+        if (len(good_vias) != len(via_centers)) or (len(good_vias) > args.max_via_in_win):
             # print('nc {} not a good cut'.format(nc))
             return False
     return True
@@ -85,11 +91,11 @@ def centers_from_polys(polys):
         centers[index] = center_by_poly(poly)
     return centers
 
-def cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers):
+def cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, args):
     final_rects = []
     for nc in range(1, len(mr.vias)+1):
         y_pred = KMeans(n_clusters=nc).fit(mr.vias)
-        if check_good_cut(mr, nc, y_pred):
+        if check_good_cut(mr, nc, y_pred, args):
             # print('nc {} is a good cut'.format(nc))
             for label, cc in enumerate(y_pred.cluster_centers_):
                 via_to_label_index = np.where(y_pred.labels_ == label)
@@ -120,29 +126,18 @@ def get_frdb(args):
         opc_centers = centers_from_polys(opc_polys)
         sraf_centers = centers_from_polys(sraf_polys)
         print('mr has: ', len(merge_rects))
+        logtxt('mr has: {}\n'.format(len(merge_rects)), args)
         final_rects = []
         for mr in tqdm(merge_rects):
-            frs = cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers)
+            frs = cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, args)
             final_rects += frs
         print('fr has: ', len(final_rects))
+        logtxt('fr has: {}\n'.format(len(final_rects)), args)
         frdb_name = gds_name.replace('.gds', '_fr')
         frdb_path = os.path.join(out_folder, frdb_name)
         db = shelve.open(frdb_path)
         db['final_rects'] = final_rects
         db.close()
-
-# tmp = []
-# for mr in merge_rects:
-#     if (len(mr.vias) == 1):
-#         frs = cut_mr(mr)
-#         print(frs)
-#         break
-
-
-
-
-
-# cut_mr(tmp)
 
 
 

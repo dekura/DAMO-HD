@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 16:00:12
-@LastEditTime: 2020-04-13 18:00:06
+@LastEditTime: 2020-04-25 23:09:04
 @Contact: cgjhaha@qq.com
 @Description: total flow
 '''
@@ -16,6 +16,7 @@ from get_mrdb import get_mrdb
 from get_frdb import get_frdb
 from visual_fr import visual_fr
 from fr2gds import fr2gds
+from info_fr import info_fr, logtxt
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--name', type=str, default='ispd19', help='experiment name')
@@ -28,6 +29,7 @@ parser.add_argument('--stat_folder', type=str, default='./stat', help='folder to
 parser.add_argument('--frdb_folder', type=str, default='./frdb', help='folder to save fr db')
 parser.add_argument('--vis_folder', type=str, default='./visual', help='folder to save fr visual')
 parser.add_argument('--res_folder', type=str, default='./results', help='folder to save fr results')
+parser.add_argument('--max_via_in_win', type=int, default=5, help='max via num in a split window')
 args = parser.parse_args()
 
 
@@ -56,7 +58,7 @@ def predir(args):
 
 
 t = time.time()
-
+logtxt('testing time : {} \n'.format(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())), args)
 
 
 predir(args)
@@ -91,11 +93,10 @@ Visual the fr
 visual_fr(args)
 
 '''
-TODO:
 analysis the vianum distribution
 how many 1 2 3 4 5 6 in this way
 '''
-
+info_fr(args)
 
 '''`
 create fr to a small window gds
@@ -104,5 +105,5 @@ create fr to a small window gds
 fr2gds(args)
 
 elapsed = time.time() - t
-
 print('total running time: {}'.format(elapsed))
+logtxt('total running time: {}\n\n'.format(elapsed), args)

@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-12 09:02:31
-@LastEditTime: 2020-04-13 17:41:04
+@LastEditTime: 2020-04-18 10:26:26
 @Contact: cgjhaha@qq.com
 @Description: class of shapes
 '''

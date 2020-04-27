@@ -1,24 +1,29 @@
 # remote server
 python=/research/dept7/glchen/miniconda3/envs/guojin/bin/python
 
-vianum=4
+
+name=ispdrecthdsep
 
 $python flow.py \
---name viahdsep \
+--name $name \
 --load_size 2048 \
 --crop_size 1024 \
 --test_ratio 4 \
---max_pervia 5000 \
+--max_pervia 2000 \
 --for_dmo \
---for_dls \
 --set_byvia \
---gen_via_lists $vianum \
+--gen_via_lists 1,2,3,4,5,6 \
 --gen_seen_set \
---gds_path '/research/dept7/glchen/datasets/gds/ovia'$vianum'/gds/' \
---out_folder /research/dept7/glchen/datasets/dlsopc_datasets/viahdsep \
---gen_good \
---sqldb_path '/research/dept7/glchen/proj12/ovia'$vianum'.db' \
---epebar 0.7
+--gds_path /research/dept7/glchen/github/pix2pixHD/datasets/fc_pre/results/ispd19test \
+--out_folder /research/dept7/glchen/datasets/dlsopc_datasets/$name
+
+# --gds_path /research/dept7/glchen/datasets/gds/layouts05frac48via12/gds/ \
+# --out_folder /research/dept7/glchen/datasets/dlsopc_datasets/recthdsep
+
+
+# --gen_good \
+# --sqldb_path '/research/dept7/glchen/proj12/ovia'$vianum'.db' \
+# --epebar 0.7
 
 # $python flow.py \
 # --name viahdsep \
@@ -51,8 +56,7 @@ $python flow.py \
 # --load_size 2048 \
 # --crop_size 1024 \
 # --for_dmo \
-# --for_dls \
 # --set_byvia \
-# --gen_via_lists 2 \
+# --gen_via_lists 1 \
 # --gds_path /Users/dekura/Downloads/testforpredataset/ \
 # --out_folder /Users/dekura/Downloads/testforhd/

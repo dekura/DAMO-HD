@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-11 15:03:02
-@LastEditTime: 2020-04-13 17:11:38
+@LastEditTime: 2020-04-18 10:24:30
 @Contact: cgjhaha@qq.com
 @Description: some consts
 '''
@@ -12,7 +12,8 @@ LAYERS = {
     'sraf': 2,
     'wafer': 200,
     'dbscan': 400,
-    'final_win': 800
+    'final_win': 800,
+    'bbox': 600
 }
 
 DIRS = ['train_A', 'train_B', 'test_A', 'test_B' , 'testbg']
@@ -30,3 +31,5 @@ TOTAY_XY = 700
 VIA_WIN_WH = 1024
 
 GDS_WIN_WH = 2048
+
+BBOX_WH = 2000

@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-11 14:12:16
-@LastEditTime: 2020-03-24 16:51:50
+@LastEditTime: 2020-04-18 21:00:52
 @Contact: cgjhaha@qq.com
 @Description: get polys from a gds file.
 '''
@@ -24,6 +24,19 @@ from consts import LAYERS
 }
 '''
 def get_polys(infile, args):
+    layers = LAYERS
+    if args.gen_only_test:
+        layers = {
+                'design': 0,
+                'mask': 1,
+                'sraf': 2
+                }
+    if not args.for_dls:
+        layers = {
+                'design': 0,
+                'mask': 1,
+                'sraf': 2
+                }
     clipsize = args.load_size
     dtype = 0
     gdsii = gdspy.GdsLibrary(unit=1e-9)
@@ -35,7 +48,7 @@ def get_polys(infile, args):
     w_offset = int(bbox[0,0] - (clipsize-width)/2)
     h_offset = int(bbox[0,1] - (clipsize-height)/2)
     polys = {}
-    for name, num in LAYERS.items():
+    for name, num in layers.items():
         try:
             polyset = cell.get_polygons(by_spec=True)[(num,dtype)]
         except:
@@ -43,8 +56,8 @@ def get_polys(infile, args):
             return None
         for poly in range(0, len(polyset)):
             for points in range(0, len(polyset[poly])):
-                polyset[poly][points][0]=int(polyset[poly][points][0]-w_offset)
-                polyset[poly][points][1]=int(polyset[poly][points][1]-h_offset)
+                polyset[poly][points][0]=int(polyset[poly][points][0])-w_offset
+                polyset[poly][points][1]=int(polyset[poly][points][1])-h_offset
         polys[name] = polyset
     return polys
 

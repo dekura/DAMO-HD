@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-11 17:40:47
-@LastEditTime: 2020-03-15 14:57:53
+@LastEditTime: 2020-04-18 21:02:00
 @Contact: cgjhaha@qq.com
 @Description: generate images
 '''
@@ -22,12 +22,21 @@ def gen_im_by_layer(polys, layers, args):
         polyset = polys[layer]
         for j in range(0, len(polyset)):
             tmp = tuple(map(tuple, polyset[j]))
+            rectangle_list=[]
+            rectangle_list.append(polyset[j][0][0])
+            rectangle_list.append(polyset[j][0][1])
+            rectangle_list.append(polyset[j][2][0]-1)
+            rectangle_list.append(polyset[j][2][1]-1)
+
             if layer == 'design':
-                draw_r.polygon(tmp, fill=255)
+                # draw_r.polygon(tmp, fill=255)
+                draw_r.rectangle(rectangle_list, fill=255)
             if layer == 'mask':
-                draw_g.polygon(tmp, fill=255)
+                # draw_g.polygon(tmp, fill=255)
+                draw_g.rectangle(rectangle_list, fill=255)
             if layer == 'sraf':
-                draw_b.polygon(tmp, fill=255)
+                # draw_b.polygon(tmp, fill=255)
+                draw_b.rectangle(rectangle_list, fill=255)
             if layer == 'wafer':
                 draw_r.polygon(tmp, fill=255)
                 draw_g.polygon(tmp, fill=255)

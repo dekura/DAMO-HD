@@ -2,11 +2,11 @@
 --gpu_ids 0 \
 --checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \
 --results_dir /research/dept7/glchen/github/pix2pixHD/results \
---dataroot /research/dept7/glchen/datasets/dlsopc_datasets/viahdsep/via5_good/dmo \
+--dataroot /research/dept7/glchen/datasets/dlsopc_datasets/ispdrecthdsep/via1/dmo \
 --model pix2pixHD \
 --netG global \
 --resize_or_crop none \
---name ovia5pixhd_e100_1024_good_dr2mg_D1d1 \
+--name oisrect1pixhd_e50_1024_dr2mg_D1d1 \
 --loadSize 1024 \
 --fineSize 1024 \
 --which_epoch latest \

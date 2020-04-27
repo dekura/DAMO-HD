@@ -15,4 +15,6 @@ class TestOptions(BaseOptions):
         self.parser.add_argument("--engine", type=str, help="run serialized TRT engine")
         self.parser.add_argument("--onnx", type=str, help="run ONNX model via TRT")
         self.parser.add_argument("--zip_and_send", action='store_true', help='zip the results and send to server')
+        self.parser.add_argument("--is_fc", action='store_true', help='is a full chip(fc) test')
+        self.parser.add_argument("--fc_p", type=str, default='_fc', help="postname of fc")
         self.isTrain = False

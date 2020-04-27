@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-16 11:29:23
-@LastEditTime: 2020-04-06 16:33:20
+@LastEditTime: 2020-04-26 22:48:12
 @Contact: cgjhaha@qq.com
 @Description: make command for train or testing
 '''
@@ -20,12 +20,15 @@ parser.add_argument('--dataroot', type=str, required=True, help='dataroot for tr
 parser.add_argument('--model', type=str, default='pix2pixHD', help='model pix2pixHD | pix2pixw | pix2pixL1')
 parser.add_argument('--test_dmo', default=False, action='store_true', help='if gen test script')
 parser.add_argument('--epoch', default='latest', type=str, help='test epoch')
+parser.add_argument('--save_epoch_freq', default=50, type=int, help='save epoch freq')
 parser.add_argument('--test_num', default=5000, type=int, help='test num')
 parser.add_argument('--continue_train', default=False, action='store_true', help='whether continue train')
 parser.add_argument('--user', default='glchen', type=str, help='python user')
 parser.add_argument('--n_layers_D', type=int, default=3, help='only used if which_model_netD==n_layers')
 parser.add_argument('--num_D',type=int, default=2, help='how many d to use')
 parser.add_argument('--vianum',type=int, default=2, help='the vianum in the training set')
+parser.add_argument('--fc_p', type=str, default='', help='fc postname')
+parser.add_argument('--results_root', type=str, default='', help='results root')
 # parser.add_argument('--ndf', type=int, default=64, help='# of discrim filters in first conv layer')
 args = parser.parse_args()
 
@@ -111,13 +114,13 @@ def gen_dmo(args):
 --label_nc 0 \\
 --no_instance \\
 --save_latest_freq 2000 \\
---save_epoch_freq 20 \\
+--save_epoch_freq %d \\
 --verbose
 """%(user_pre, model_prefix, args.vianum, good_prefix, args.gpu_num, args.load_crop_size, log_dir, ckp_name,
     args.gpu_num, python_inter, gpu_ids, args.dataroot, args.model, args.gpu_num,
     args.resize_or_crop, args.load_crop_size, args.load_crop_size,
     args.half_iter, args.half_iter, args.p_freq, ckp_name, args.train_set_num,
-    args.num_D, args.n_layers_D)
+    args.num_D, args.n_layers_D, args.save_epoch_freq)
 
     if args.continue_train:
         dmo_code += """--continue_train
@@ -169,7 +172,7 @@ def gen_test_dmo(args):
     test_code="""%s test_mask_green.py \\
 --gpu_ids %s \\
 --checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \\
---results_dir /research/dept7/glchen/github/pix2pixHD/results \\
+--results_dir %s \\
 --dataroot %s \\
 --model %s \\
 --netG global \\
@@ -182,9 +185,13 @@ def gen_test_dmo(args):
 --norm instance \\
 --label_nc 0 \\
 --no_instance \\
---zip_and_send
-"""%(python_inter, gpu_ids, args.dataroot, args.model, args.resize_or_crop, ckp_name,
+--zip_and_send \\
+"""%(python_inter, gpu_ids, args.results_root,args.dataroot, args.model, args.resize_or_crop, ckp_name,
     args.load_crop_size, args.load_crop_size, args.epoch, args.test_num)
+    if args.fc_p == '_fc' or args.fc_p == '_fc5':
+        test_code+="""--is_fc \\
+--fc_p %s \\
+"""%(args.fc_p)
     return test_code
 
 def main(args):
