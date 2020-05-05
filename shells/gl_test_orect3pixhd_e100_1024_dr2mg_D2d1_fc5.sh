@@ -10,10 +10,10 @@
 --loadSize 1024 \
 --fineSize 1024 \
 --which_epoch latest \
---how_many 1000 \
+--how_many 10000 \
 --norm instance \
 --label_nc 0 \
 --no_instance \
---zip_and_send
+--zip_and_send \
 --is_fc \
 --fc_p _fc5 \

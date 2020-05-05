@@ -1,15 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=v2g41024
+#SBATCH --job-name=isr541024
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
-#SBATCH --output=/research/dept7/glchen/tmp/log/orect2pixhd_e100_1024_good_dr2mg_D1d1.txt
+#SBATCH --output=/research/dept7/glchen/tmp/log/oisrect5pixhd_e100_1024_dr2mg_D1d1.txt
 #SBATCH --gres=gpu:4
 
 
 /research/dept7/glchen/miniconda3/envs/guojin/bin/python train.py \
 --gpu_ids 0,1,2,3 \
 --checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \
---dataroot /research/dept7/glchen/datasets/dlsopc_datasets/recthdsep/via2_good/dmo \
+--dataroot /research/dept7/glchen/datasets/dlsopc_datasets/ispdrecthdsep/via5/dmo \
 --model pix2pixHD \
 --netG global \
 --batchSize 4 \
@@ -23,12 +23,12 @@
 --output_nc 3 \
 --norm instance \
 --data_type 8 \
---name orect2pixhd_e100_1024_good_dr2mg_D1d1 \
---max_dataset_size 1200 \
+--name oisrect5pixhd_e100_1024_dr2mg_D1d1 \
+--max_dataset_size 2000 \
 --num_D 1 \
 --n_layers_D 1 \
 --label_nc 0 \
 --no_instance \
 --save_latest_freq 2000 \
---save_epoch_freq 10 \
+--save_epoch_freq 20 \
 --verbose

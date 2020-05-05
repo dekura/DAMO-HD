@@ -14,7 +14,7 @@ $python flow.py \
 --set_byvia \
 --gen_via_lists 1,2,3,4,5,6 \
 --gen_seen_set \
---gds_path /research/dept7/glchen/github/pix2pixHD/datasets/fc_pre/results/ispd19test \
+--gds_path /research/dept7/glchen/github/pix2pixHD/datasets/fc_pre/results/ispd19fc5 \
 --out_folder /research/dept7/glchen/datasets/dlsopc_datasets/$name
 
 # --gds_path /research/dept7/glchen/datasets/gds/layouts05frac48via12/gds/ \

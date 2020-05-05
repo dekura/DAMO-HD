@@ -1,9 +1,9 @@
-phase='train'
-# phase='test'
+# phase='train'
+phase='test'
 # base config
 # --------
-# for_good=true
-for_good=false
+for_good=true
+# for_good=false
 # --------
 user=glchen
 # user=wlchen
@@ -12,8 +12,8 @@ user=glchen
 # vianum=6
 # vianum=5
 # vianum=4
-vianum=3
-# vianum=2
+# vianum=3
+vianum=2
 # vianum=1
 # --------
 # is_rect=false
@@ -27,16 +27,16 @@ n_layers_D=1
 # num_D=1
 num_D=2
 # --------
+# epoch=100
+epoch=50
+# --------
 model='pix2pixHD'
 # model='pix2pixL1'
 # --------
 load_crop_size=1024
 # load_crop_size=512
 # --------
-epoch=100
-# epoch=50
-# --------
-save_epoch_freq=50
+save_epoch_freq=10
 # --------
 train_set_num=2000
 
