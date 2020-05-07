@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-09 20:19:13
-@LastEditTime: 2020-04-15 09:30:09
+@LastEditTime: 2020-05-05 10:42:40
 @Contact: cgjhaha@qq.com
 @Description: the gds to png flow
 
@@ -41,20 +41,29 @@ parser.add_argument('--set_byvia', default=False, action='store_true', help='whe
 parser.add_argument('--gen_via_lists', type=str, default='1,2', help='which vianum subdataset to gen, 1,2,3,4')
 parser.add_argument('--gen_seen_set', default=False, action='store_true', help='if true, get test set from train set')
 parser.add_argument('--gds_path', type=str, required=True, help='the input gds path')
+parser.add_argument('--gds_post', default='*.gds', help='the input gds postname')
 parser.add_argument('--out_folder', type=str, required=True, help='output data folder')
 parser.add_argument('--gen_good', default=False, action='store_true', help='if gen_good, will get info from sqldb to gen better epe dataset')
 parser.add_argument('--sqldb_path', default='./', type=str, help='the sqldb path for one via gen')
 parser.add_argument('--epebar', default=0.6 , type=float, help='epebar for good dataset')
-parser.add_argument('--gen_only_test', default=False, action='store_true', help='whether gen only test set')
+parser.add_argument('--gen_only_fc', default=False, action='store_true', help='whether gen only test set')
+parser.add_argument('--gen_only_l2', default=False, action='store_true', help='whether gen only l2 set')
 # out_folder/dmo/trainA
 # out_folder/dls/trainA
 args = parser.parse_args()
 
-if args.gen_only_test:
+if args.gen_only_fc:
     DIRS = ['test_A', 'test_B' , 'testbg']
     args.test_ratio = 1
     args.gen_seen_set = False
     args.gen_good = False
+
+if args.gen_only_l2:
+    DIRS = ['test_A', 'test_B']
+    args.test_ratio = 1
+    args.gen_seen_set = False
+    args.gen_good = False
+
 
 
 def save_im(imA, imB, dataset_type, sub_type, item_name, args):
@@ -180,16 +189,18 @@ def main():
             prepare_dirs(args)
             test_set, train_set = sets
             gen_data(test_set, 'test', args)
-            gen_data(test_set, 'testbg', args)
-            if not args.gen_only_test:
+            if not args.gen_only_l2:
+                gen_data(test_set, 'testbg', args)
+            if not (args.gen_only_fc or args.gen_only_l2):
                 gen_data(train_set, 'train', args)
     else:
         args._root_folder = args.out_folder
         prepare_dirs(args)
         test_set, train_set = gen_dataset(args)
         gen_data(test_set, 'test', args)
-        gen_data(test_set, 'testbg', args)
-        if not args.gen_only_test:
+        if not args.gen_only_l2:
+            gen_data(test_set, 'testbg', args)
+        if not (args.gen_only_fc or args.gen_only_l2):
             gen_data(train_set, 'train', args)
 
     elapsed = time.time() - t

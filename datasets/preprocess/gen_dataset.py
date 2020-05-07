@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-14 20:06:06
-@LastEditTime: 2020-04-18 20:50:54
+@LastEditTime: 2020-05-05 10:21:28
 @Contact: cgjhaha@qq.com
 @Description: get train test dataset by via
 '''
@@ -34,7 +34,7 @@ def get_names_good(args):
 }
 '''
 def get_detail_list(args):
-    restr = os.path.join(args.gds_path, '*.gds')
+    restr = os.path.join(args.gds_path, args.gds_post)
     gds_list = glob.glob(restr)
     gds_list.sort()
     list_by_via = {}

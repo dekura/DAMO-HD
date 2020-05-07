@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-11 14:12:16
-@LastEditTime: 2020-04-18 21:00:52
+@LastEditTime: 2020-05-05 10:44:37
 @Contact: cgjhaha@qq.com
 @Description: get polys from a gds file.
 '''
@@ -25,7 +25,7 @@ from consts import LAYERS
 '''
 def get_polys(infile, args):
     layers = LAYERS
-    if args.gen_only_test:
+    if args.gen_only_fc:
         layers = {
                 'design': 0,
                 'mask': 1,
@@ -36,6 +36,13 @@ def get_polys(infile, args):
                 'design': 0,
                 'mask': 1,
                 'sraf': 2
+                }
+    if args.gen_only_l2:
+        layers = {
+                'design': 0,
+                'mask': 1,
+                'sraf': 2,
+                'wafer': 200
                 }
     clipsize = args.load_size
     dtype = 0

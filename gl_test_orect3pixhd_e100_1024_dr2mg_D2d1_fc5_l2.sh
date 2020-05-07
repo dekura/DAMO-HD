@@ -1,0 +1,19 @@
+/research/dept7/glchen/miniconda3/envs/guojin/bin/python test_l2.py \
+--gpu_ids 0 \
+--checkpoints_dir /research/dept7/glchen/github/pix2pixHD/checkpoints \
+--results_dir /research/dept7/glchen/github/pix2pixHD/l2cali_results \
+--dataroot /research/dept7/glchen/datasets/dlsopc_datasets/pix2l2rect/orect3pixhd_e100_1024_dr2mg_D2d1_fc5_CALI/dls \
+--model pix2pixHD \
+--netG global \
+--resize_or_crop none \
+--name orect3pixhd_e100_1024_dr2mg_D2d1_fc5 \
+--loadSize 1024 \
+--fineSize 1024 \
+--which_epoch latest \
+--how_many 10000 \
+--norm instance \
+--label_nc 0 \
+--no_instance \
+--zip_and_send \
+--is_fc \
+--fc_p _fc5 \

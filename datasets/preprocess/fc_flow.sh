@@ -1,7 +1,7 @@
 ###
  # @Author: Guojin Chen
  # @Date: 2020-04-15 09:11:04
- # @LastEditTime: 2020-04-26 15:55:28
+ # @LastEditTime: 2020-05-05 10:38:25
  # @Contact: cgjhaha@qq.com
  # @Description: gen fc images
 ###
@@ -13,7 +13,7 @@ $python flow.py \
 --name $name \
 --load_size 2048 \
 --crop_size 1024 \
---gen_only_test \
+--gen_only_fc \
 --max_pervia 10000 \
 --for_dmo \
 --set_byvia \
