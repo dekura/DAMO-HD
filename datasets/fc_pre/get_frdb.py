@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 13:28:54
-@LastEditTime: 2020-04-25 23:05:09
+@LastEditTime: 2020-05-12 13:52:01
 @Contact: cgjhaha@qq.com
 @Description: using the k-means++ to cut the window
 '''

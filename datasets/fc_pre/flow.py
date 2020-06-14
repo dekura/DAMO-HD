@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 16:00:12
-@LastEditTime: 2020-04-25 23:09:04
+@LastEditTime: 2020-05-12 14:08:50
 @Contact: cgjhaha@qq.com
 @Description: total flow
 '''
@@ -17,6 +17,7 @@ from get_frdb import get_frdb
 from visual_fr import visual_fr
 from fr2gds import fr2gds
 from info_fr import info_fr, logtxt
+from merge_dmo import merge_dmo
 
 parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('--name', type=str, default='ispd19', help='experiment name')
@@ -30,6 +31,8 @@ parser.add_argument('--frdb_folder', type=str, default='./frdb', help='folder to
 parser.add_argument('--vis_folder', type=str, default='./visual', help='folder to save fr visual')
 parser.add_argument('--res_folder', type=str, default='./results', help='folder to save fr results')
 parser.add_argument('--max_via_in_win', type=int, default=5, help='max via num in a split window')
+parser.add_argument('--dmo_res_folder', type=str, default='', help='the dmo results for merge gds')
+parser.add_argument('--dmo_merged_folder', type=str, default='./dmo_merged', help='the merged gds store folder')
 args = parser.parse_args()
 
 
@@ -54,6 +57,8 @@ def predir(args):
     makedir(args.vis_folder)
     args.res_folder = os.path.join(args.res_folder, args.name)
     makedir(args.res_folder)
+    args.dmo_merged_folder = os.path.join(args.dmo_merged_folder, args.name)
+    makedir(args.dmo_merged_folder)
 
 
 
@@ -66,13 +71,13 @@ predir(args)
 get all via and set a merge rect outside 510
 save them to dbscan folder
 '''
-cmr(args)
+# cmr(args)
 
 '''
 merge them using calibre
 '''
 
-cali(args)
+# cali(args)
 
 '''
 store all via center
@@ -80,29 +85,34 @@ store all merge_rect center and areas
 for the mergt_rect that are longer than 1024
 other algorithms.
 '''
-get_mrdb(args)
+# get_mrdb(args)
 
 '''
 cut the mr(merge_rects) to fr(final_rects)
 '''
-get_frdb(args)
+# get_frdb(args)
 
 '''
 Visual the fr
 '''
-visual_fr(args)
+# visual_fr(args)
 
 '''
 analysis the vianum distribution
 how many 1 2 3 4 5 6 in this way
 '''
-info_fr(args)
+# info_fr(args)
 
-'''`
+'''
 create fr to a small window gds
 '''
 
-fr2gds(args)
+# fr2gds(args)
+
+'''
+merge all the final rects
+'''
+merge_dmo(args)
 
 elapsed = time.time() - t
 print('total running time: {}'.format(elapsed))

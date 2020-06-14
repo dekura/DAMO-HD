@@ -1,9 +1,9 @@
-# phase='train'
-phase='test'
+phase='train'
+# phase='test'
 # base config
 # --------
-for_good=true
-# for_good=false
+# for_good=true
+for_good=false
 # --------
 user=glchen
 # user=wlchen
@@ -13,11 +13,11 @@ user=glchen
 # vianum=5
 # vianum=4
 # vianum=3
-vianum=2
-# vianum=1
+# vianum=2
+vianum=1
 # --------
-# is_rect=false
-is_rect=true
+is_rect=false
+# is_rect=true
 # --------
 is_ispdrect=false
 # is_ispdrect=true
@@ -27,8 +27,8 @@ n_layers_D=1
 # num_D=1
 num_D=2
 # --------
-# epoch=100
-epoch=50
+epoch=100
+# epoch=50
 # --------
 model='pix2pixHD'
 # model='pix2pixL1'
@@ -46,19 +46,18 @@ p_freq=100
 
 ##### test phases ####
 # --------
-test_epoch=latest
-# test_epoch=100
-# test_epoch=60
-# --------
-test_num=1000
-# test_num=2000
-# --------
 # is_fc=true
 is_fc=false
 # --------
 is_fc5=true
 # is_fc5=false
 # --------
+test_epoch=latest
+# test_epoch=100
+# test_epoch=60
+# --------
+test_num=1000
+# test_num=2000
 
 if [ $is_rect = true ]; then
     root_folder='recthdsep'
