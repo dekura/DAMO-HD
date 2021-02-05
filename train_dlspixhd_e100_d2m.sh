@@ -12,7 +12,7 @@
 /research/dept7/glchen/miniconda3/envs/guojin/bin/python train.py \
 --gpu_ids 0,1,2,3 \
 --checkpoints_dir /research/d2/xfyao/guojin/pix2pixHD/checkpoints \
---dataroot /research/d2/xfyao/guojin/data/datasets/develset/pngs \
+--dataroot /research/d2/xfyao/guojin/data/datasets/develset/ \
 --netG global \
 --batchSize 4 \
 --resize_or_crop resize_and_crop \
