@@ -26,5 +26,4 @@
 --norm batch \
 --name dls_e100_d2m \
 --label_nc 0 \
---no_instance \
---tf_log
+--no_instance
