@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-03-11 14:12:16
-@LastEditTime: 2020-04-09 15:59:15
+LastEditTime: 2021-02-03 17:03:18
 @Contact: cgjhaha@qq.com
 @Description: get polys from a gds file.
 '''
