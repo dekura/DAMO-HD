@@ -21,8 +21,8 @@
 --niter 50 \
 --niter_decay 50 \
 --print_freq 500 \
---input_nc 1 \
---output_nc 1 \
+--input_nc 3 \
+--output_nc 3 \
 --norm batch \
 --name dls_e100_d2m \
 --label_nc 0 \
