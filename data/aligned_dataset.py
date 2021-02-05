@@ -39,16 +39,25 @@ class AlignedDataset(BaseDataset):
         params = get_params(self.opt, A.size)
         if self.opt.label_nc == 0:
             transform_A = get_transform(self.opt, params)
-            A_tensor = transform_A(A.convert('RGB'))
+            if self.opt.input_nc == 1:
+                A_tensor = transform_A(A.convert('L'))
+            else:
+                A_tensor = transform_A(A.convert('RGB'))
         else:
             transform_A = get_transform(self.opt, params, method=Image.NEAREST, normalize=False)
-            A_tensor = transform_A(A) * 255.0
+            if self.opt.input_nc == 1:
+                A_tensor = transform_A(A.convert('L')) * 255.0
+            else:
+                A_tensor = transform_A(A.convert('RGB')) * 255.0
 
         B_tensor = inst_tensor = feat_tensor = 0
         ### input B (real images)
         if self.opt.isTrain or self.opt.use_encoded_image or self.opt.phase == 'test':
             B_path = self.B_paths[index]
-            B = Image.open(B_path).convert('RGB')
+            if self.opt.input_nc == 1:
+                B = Image.open(B_path).convert('L')
+            else:
+                B = Image.open(B_path).convert('RGB')
             transform_B = get_transform(self.opt, params)
             B_tensor = transform_B(B)
 
