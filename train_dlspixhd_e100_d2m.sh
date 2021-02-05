@@ -9,12 +9,13 @@
 # the mask is generated from the deep levelset generator
 
 
-/research/dept7/glchen/miniconda3/envs/guojin/bin/python train.py \
+/research/d2/xfyao/tools/anaconda3/envs/maskrcnn/bin/python train.py \
 --gpu_ids 0,1,2,3 \
 --checkpoints_dir /research/d2/xfyao/guojin/pix2pixHD/checkpoints \
 --dataroot /research/d2/xfyao/guojin/data/datasets/develset/pngs \
 --netG global \
 --batchSize 4 \
+--dataset_mode aligned \
 --resize_or_crop resize_and_crop \
 --loadSize 1024 \
 --fineSize 1024 \
