@@ -15,7 +15,6 @@
 --dataroot /research/d2/xfyao/guojin/data/datasets/develset/ \
 --netG global \
 --batchSize 4 \
---dataset_mode aligned \
 --resize_or_crop resize_and_crop \
 --loadSize 1024 \
 --fineSize 1024 \
