@@ -24,6 +24,4 @@
 --label_nc 0 \
 --no_instance \
 --save_epoch_freq 5 \
---continue_train \
---which_epoch 10 \
 --save_latest_freq 4000
