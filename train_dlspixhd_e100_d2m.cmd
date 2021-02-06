@@ -23,4 +23,5 @@
 --name dls_e100_d2m \
 --label_nc 0 \
 --no_instance \
---save_epoch_freq 10
+--save_epoch_freq 10 \
+--continue_train
