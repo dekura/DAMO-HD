@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=dls
+#SBATCH --job-name=dls8
 #SBATCH --mail-user=cgjhaha@qq.com
 #SBATCH --mail-type=ALL
 #SBATCH --output=/research/d2/xfyao/guojin/tmp/log/dlspixhd_e100_d2m.txt
