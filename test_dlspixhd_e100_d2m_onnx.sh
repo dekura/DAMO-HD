@@ -13,4 +13,5 @@
 --how_many 1000 \
 --norm batch \
 --label_nc 0 \
---no_instance
+--no_instance \
+--export_onnx /research/d2/xfyao/guojin/pix2pixHD/onnx_model/dls_e100_d2m_fp32.onnx

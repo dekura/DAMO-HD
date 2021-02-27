@@ -79,12 +79,6 @@ for i, data in enumerate(tbar):
     else:
         generated = model.inference(data['label'], data['inst'], data['image'])
 
-    # visuals = OrderedDict([('input_label', util.tensor2label(data['label'][0], opt.label_nc)),
-    # ('synthesized_image', util.tensor2im(generated.data[0]))])
-    # print(data)
-    # print(data['label'].size())
-    # print(data['image'].size())
-    # print(generated.data.size())
     visuals = OrderedDict([('input_label', util.tensor2label(data['label'][0], opt.label_nc)),
                         ('synthesized_image', util.tensor2im(generated.data[0])),
                         ('real_image', util.tensor2im(data['image'][0]))])
