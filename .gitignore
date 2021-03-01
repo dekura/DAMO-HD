@@ -41,3 +41,5 @@ test/data/legacy_serialized.pt
 .vscode/
 *.gds
 *.db
+onnx_model/
+trt_engine/
