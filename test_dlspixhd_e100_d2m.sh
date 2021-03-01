@@ -1,8 +1,9 @@
-/research/d2/xfyao/tools/anaconda3/envs/maskrcnn/bin/python test_mask_green.py \
+python=/home/guojin/miniconda3/envs/pixhd/bin/python
+$python test_mask_green.py \
 --gpu_ids 0 \
---checkpoints_dir /research/d2/xfyao/guojin/pix2pixHD/checkpoints \
---results_dir /research/d2/xfyao/guojin/pix2pixHD/results \
---dataroot /research/d2/xfyao/guojin/data/datasets/develset/ \
+--checkpoints_dir ./checkpoints \
+--results_dir ./results \
+--dataroot /home/guojin/data/datasets/pix2pixHD/develset \
 --model pix2pixHD \
 --netG global \
 --resize_or_crop resize_and_crop \

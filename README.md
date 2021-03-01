@@ -59,7 +59,7 @@ Pytorch implementation of our method for high-resolution (e.g. 2048x1024) photor
 - Install PyTorch and dependencies from http://pytorch.org
 - Install python libraries [dominate](https://github.com/Knio/dominate).
 ```bash
-pip install dominate
+pip install dominate, tqdm, scipy
 ```
 - Clone this repo:
 ```bash
