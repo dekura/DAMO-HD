@@ -229,9 +229,9 @@ ISPD
 | 5      | orect5pixhd_e100_1024_good_dr2mg_D2d1_fc5 | 4342.1079   | 487.9383    | 5526.0913       | 212.0258     |
 | 6      | ovia6pixhd_e100_1024_good_dr2mg_D2d1      | 5981.0410   | 338.67      | 6647.8638       | 228.1        |
 
+![img](rec.assets/table1.png)
 
-
-# TCAD Enhanced DAMO
+# TCAD Enhanced DAMO FP16
 
 ref:  https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT
 
@@ -250,8 +250,6 @@ Set rate to be 0.65: [ 184.6   182.65  185.25  189.15  181.35  184.6 ]
 
 
 
-![img](rec.assets/table1.png)
-
 ### Enhanced DAMO for the ISPD
 
 | Case | L2(bad) | PvB(good) | runtime(best) |
@@ -262,4 +260,78 @@ Set rate to be 0.65: [ 184.6   182.65  185.25  189.15  181.35  184.6 ]
 | 4    | 4387    | 11014     | 244           |
 | 5    | 4923    | 12279     | 315           |
 
+
+
+# TCAD Enhanced DAMO FP32
+
+ref:  https://github.com/kentaroy47/benchmark-FP32-FP16-INT8-with-TensorRT
+
+Set rate to be 0.71 : 'tcad_t: ‘, [ 201.64,  199.51,  202.35,  206.61,  198.09,  201.64]
+
+
+
+| Case | L2(bad) | PvB(good) | runtime(best) |
+| ---- | ------- | --------- | ------------- |
+| 1    | 1081    | 2916      | 203           |
+| 2    | 2129    | 5576      | 199           |
+| 3    | 3244    | 8271      | 205           |
+| 4    | 4263    | 10946     | 204           |
+| 5    | 5396    | 13640     | 198           |
+| 6    | 5982    | 15542     | 201           |
+
+
+
+### Enhanced DAMO for the ISPDw
+
+| Case | L2(bad) | PvB(good) | runtime(best) |
+| ---- | ------- | --------- | ------------- |
+| 1    | 1070    | 2850      | 2498          |
+| 2    | 2217    | 5666      | 1029          |
+| 3    | 3329    | 8173      | 674           |
+| 4    | 4387    | 11014     | 244           |
+| 5    | 4923    | 12279     | 315           |
+
+
+
+
+
+
+
+
+
+### Enhanced DAMO for the TCAD
+
+
+
+before
+
+```
+DLS-DMO:
+
+split window: 232.2s
+gds2png: 546.4s
+inference:  3952.2s /6111 (0.64s) (1batch 1gpu)
+Predicted 231.5s (4batch 8 gpu)
+png2gds: 3617s( predicted 64 process 1 cpu)
+
+
+Total process 232+ 546 + 3617 = 4395s(gds2png png2gds)
+total predict 4395 + 231.5 = 4626.5
+```
+
+Now
+
+```
+TCAD:
+
+split window:  -> 45s
+gds2png: -> 314.5s
+Predicted (4batch 8 gpu)  -> 173s
+
+png2gds: 2348s directly output the matrix to the gds format.
+
+
+Total process = 45 + 314.5 + 2348  = 2707
+Total predict = 2707 + 173 = 2880
+```
 
