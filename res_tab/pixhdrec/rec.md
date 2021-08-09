@@ -67,7 +67,7 @@ EPE和pixacc有相关关系。在pixAcc上升miou下降的情况下，EPE效果�
 V6D1 V5D1
 
 V3D1 V4D1
-o的l1·
+o的l1
 
 
 

@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 16:00:12
-@LastEditTime: 2020-05-12 14:08:50
+LastEditTime: 2021-08-09 11:44:13
 @Contact: cgjhaha@qq.com
 @Description: total flow
 '''
@@ -71,13 +71,13 @@ predir(args)
 get all via and set a merge rect outside 510
 save them to dbscan folder
 '''
-# cmr(args)
+cmr(args)
 
 '''
 merge them using calibre
 '''
 
-# cali(args)
+cali(args)
 
 '''
 store all via center
@@ -85,12 +85,12 @@ store all merge_rect center and areas
 for the mergt_rect that are longer than 1024
 other algorithms.
 '''
-# get_mrdb(args)
+get_mrdb(args)
 
 '''
 cut the mr(merge_rects) to fr(final_rects)
 '''
-# get_frdb(args)
+get_frdb(args)
 
 '''
 Visual the fr
@@ -101,18 +101,18 @@ Visual the fr
 analysis the vianum distribution
 how many 1 2 3 4 5 6 in this way
 '''
-# info_fr(args)
+info_fr(args)
 
 '''
 create fr to a small window gds
 '''
 
-# fr2gds(args)
+fr2gds(args)
 
 '''
 merge all the final rects
 '''
-merge_dmo(args)
+# merge_dmo(args)
 
 elapsed = time.time() - t
 print('total running time: {}'.format(elapsed))
