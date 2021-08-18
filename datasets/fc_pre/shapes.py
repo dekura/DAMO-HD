@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-12 09:02:31
-@LastEditTime: 2020-05-12 13:55:28
+LastEditTime: 2021-08-14 00:51:51
 @Contact: cgjhaha@qq.com
 @Description: class of shapes
 '''
@@ -50,6 +50,7 @@ class FINAL_RECT:
         self.vias = vias
         self.opc_rects = []
         self.sraf_rects = []
+        self.wafer_rects = [] # not rects, still polygons
         # self.via_center2rects()
 
     def via_center2rects(self):
@@ -72,6 +73,20 @@ class FINAL_RECT:
             opc_rects.append(opc_rect)
         self.opc_rects = opc_rects
         assert len(self.opc_rects) == len(self.vias)
+
+    def get_wafer_polys(self, wafer_polys, wafer_centers):
+        dis = (VIA_WH/2)/PRECISION
+        wafer_rects = []
+        for index, center in enumerate(self.vias):
+            pos = np.where((np.abs(center[0] - wafer_centers[:, 0]) <= dis) & (np.abs(center[1] - wafer_centers[:, 1]) <= dis))
+            wafer_poly = wafer_polys[pos]
+            # print('via center: ', self.vias[index])
+            # print('opc center: ', opc_centers[pos])
+            # wafer_rect = poly_to_rect(opc_poly[0])
+            # opc_rects.append(opc_rect)
+            wafer_rects.append(wafer_poly)
+        self.wafer_rects = wafer_rects
+        assert len(self.wafer_rects) == len(self.vias)
 
     def get_sraf_rects(self, sraf_polys, sraf_centers):
         sraf_win_wh = self.get_sraf_win_wh()

@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-16 16:52:44
-@LastEditTime: 2020-04-25 23:02:08
+LastEditTime: 2021-08-14 00:55:25
 @Contact: cgjhaha@qq.com
 @Description: get final rects infomations
 '''

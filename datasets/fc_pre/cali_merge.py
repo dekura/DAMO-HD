@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-10 11:34:53
-@LastEditTime: 2020-04-12 20:17:40
+LastEditTime: 2021-08-09 14:43:37
 @Contact: cgjhaha@qq.com
 @Description: merge the merge rounds using calibre
 '''
@@ -41,7 +41,8 @@ from cali_merge_rule import cali_merge_rule
 #         os.mkdir(log_dir)
 
 def cali_merge(gds_path, out_gds_path, cell_name, args):
-    calibre_path = 'calibre'
+    # calibre_path = 'calibre'
+    calibre_path = '/home/hgeng/Calibre/aoj_cal_2018.2_33.24/bin/calibre'
     RULE_PATH = args.rule_folder
     LOG_PATH = args.log_folder
     OUT_PATH = args.out_folder
@@ -58,7 +59,7 @@ def cali_merge(gds_path, out_gds_path, cell_name, args):
     log_name = cell_name + '_cali_merge.log'
     log_path = os.path.join(log_dir, log_name)
     cmd = '{} -drc -hier -64 {} > {}'.format(calibre_path, rule_path, log_path)
-    # print cmd
+    print(cmd)
     os.system(cmd)
 
 def cali(args):

@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 13:28:54
-@LastEditTime: 2020-05-12 13:52:01
+LastEditTime: 2021-08-18 08:53:01
 @Contact: cgjhaha@qq.com
 @Description: using the k-means++ to cut the window
 '''
@@ -17,6 +17,7 @@ from sklearn.cluster import KMeans
 
 VIA_LAYER = LAYERS['design']
 OPC_LAYER = LAYERS['mask']
+WAFER_LAYER = LAYERS['wafer']
 SRAF_LAYER = LAYERS['sraf']
 MERGE_LAYER = LAYERS['dbscan']
 
@@ -53,6 +54,43 @@ def get_opc_sraf_polys(gds_path):
             sraf_polys = polyset
     if token == 1:
         return np.array(opc_polys), np.array(sraf_polys)
+
+'''
+get the wafer polys,
+I didn't change it before
+'''
+
+def get_wafer_polys(gds_path):
+    filename = os.path.basename(gds_path)
+    GdsIn = gds_path
+    gdsii   = gdspy.GdsLibrary()
+    gdsii.read_gds(GdsIn,units='convert')
+    cell    = gdsii.top_level()[0]
+    # sellayer = [OPC_LAYER, SRAF_LAYER]
+    sellayer = [WAFER_LAYER]
+    dtype = 0  #Layout Data Type
+    token = 1
+    # sellayer = [OPC_LAYER, SRAF_LAYER] #Layer Number
+    # opc_polys = []
+    # sraf_polys = []
+    wafer_polys = []
+    for i in range(len(sellayer)):
+        try:
+            polyset = cell.get_polygons(by_spec=True)[(sellayer[i],dtype)]
+        except:
+            token=0
+            print("Layer not found, skipping...")
+            break
+        # if sellayer[i] == OPC_LAYER:
+        #     opc_polys = polyset
+        # if sellayer[i] == SRAF_LAYER:
+        #     sraf_polys = polyset
+        if sellayer[i] == WAFER_LAYER:
+            wafer_polys = polyset
+    if token == 1:
+        return np.array(wafer_polys)
+
+
 '''
 good cut:
 1. the via belong class i must in the 800 window
@@ -85,13 +123,32 @@ def center_by_poly(poly):
     center = np.array([x, y])
     return center
 
+def wafer_center_by_poly(poly):
+    # xl = poly[0][0]  # 25
+    # xr = poly[1][0]  # 75
+    # yd = poly[0][1]  # 25
+    # yu = poly[2][1]  # 75
+    # x = (xl + xr)/2
+    # y = (yd + yu)/2
+    x = np.mean(poly[:, 0])
+    y = np.mean(poly[:, 1])
+    center = np.array([x, y])
+    return center
+
 def centers_from_polys(polys):
     centers = np.zeros((len(polys), 2))
     for index, poly in enumerate(polys):
         centers[index] = center_by_poly(poly)
     return centers
 
-def cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, args):
+def wafer_centers_from_polys(polys):
+    centers = np.zeros((len(polys), 2))
+    for index, poly in enumerate(polys):
+        centers[index] = wafer_center_by_poly(poly)
+    return centers
+
+
+def cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, wafer_polys, wafer_centers, args):
     final_rects = []
     for nc in range(1, len(mr.vias)+1):
         y_pred = KMeans(n_clusters=nc).fit(mr.vias)
@@ -103,6 +160,7 @@ def cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, args):
                 fr = FINAL_RECT(cc, via_centers)
                 fr.get_opc_rects(opc_polys, opc_centers)
                 fr.get_sraf_rects(sraf_polys, sraf_centers)
+                fr.get_wafer_polys(wafer_polys, wafer_centers)
                 final_rects.append(fr)
             break
     return final_rects
@@ -123,13 +181,15 @@ def get_frdb(args):
         gds_name = gds_name.replace('_dbscan_merged_stat.gds', '.gds')
         gds_path = os.path.join(args.in_folder, gds_name)
         opc_polys, sraf_polys = get_opc_sraf_polys(gds_path)
+        wafer_polys = get_wafer_polys(gds_path)
+        wafer_centers = wafer_centers_from_polys(wafer_polys)
         opc_centers = centers_from_polys(opc_polys)
         sraf_centers = centers_from_polys(sraf_polys)
         print('mr has: ', len(merge_rects))
         logtxt('mr has: {}\n'.format(len(merge_rects)), args)
         final_rects = []
         for mr in tqdm(merge_rects):
-            frs = cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, args)
+            frs = cut_mr(mr, opc_polys, opc_centers, sraf_polys, sraf_centers, wafer_polys, wafer_centers, args)
             final_rects += frs
         print('fr has: ', len(final_rects))
         logtxt('fr has: {}\n'.format(len(final_rects)), args)

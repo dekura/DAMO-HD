@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-13 16:50:58
-@LastEditTime: 2020-05-12 14:00:22
+LastEditTime: 2021-08-18 13:04:36
 @Contact: cgjhaha@qq.com
 @Description: translate the final rects to gds layout
 '''
@@ -15,6 +15,7 @@ from const import LAYERS, GDS_WIN_WH, PRECISION, BBOX_WH
 
 VIA_LAYER = LAYERS['design']
 OPC_LAYER = LAYERS['mask']
+WAFER_LAYER = LAYERS['wafer']
 SRAF_LAYER = LAYERS['sraf']
 MERGE_LAYER = LAYERS['dbscan']
 BBOX_LAYER = LAYERS['bbox']
@@ -28,6 +29,16 @@ def remove_margin(fr_center, rects):
         rect[1][0] -= left_margin
         rect[1][1] -= down_margin
     return rects
+
+def wafer_remove_margin(fr_center, rects):
+    left_margin = fr_center[0] - (GDS_WIN_WH/2)/PRECISION
+    down_margin = fr_center[1] - (GDS_WIN_WH/2)/PRECISION
+    for rect in rects:
+        rect[:, 0] -= left_margin
+        rect[:, 1] -= down_margin
+    return rects
+
+
 
 def center2bbox(fr_center):
     center = fr_center
@@ -54,6 +65,7 @@ def tran_gds(gds, out_folder, args):
         via_rects = fr.via_center2rects()
         opc_rects = fr.opc_rects
         sraf_rects = fr.sraf_rects
+        wafer_rects = fr.wafer_rects
         bbox_rects = center2bbox(fr.center)
         # rect_names = ['via_rects', 'opc_rects', 'sraf_rects']
         fr_rects = [via_rects, opc_rects, sraf_rects, bbox_rects]
@@ -71,6 +83,14 @@ def tran_gds(gds, out_folder, args):
             for rect_points in rm_rects:
                 rect = gdspy.Rectangle(rect_points[0], rect_points[1], layer=layer_num)
                 cell.add(rect)
+        fr_rects = [wafer_rects]
+        for index, rects in enumerate(fr_rects):
+            layer_num = WAFER_LAYER
+            for i in range(len(rects)):
+                rm_rects = wafer_remove_margin(fr.center, rects[i])
+                for rect_points in rm_rects:
+                    rect = gdspy.Polygon(rect_points, layer=layer_num)
+                    cell.add(rect)
         outgds_name = 'fr_{}.gds'.format(fr_index)
         outgds_path = os.path.join(out_folder, outgds_name)
         gdsii.write_gds(outgds_path)

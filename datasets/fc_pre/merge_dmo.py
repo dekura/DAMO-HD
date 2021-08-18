@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-05-12 09:17:56
-@LastEditTime: 2020-05-12 23:32:59
+LastEditTime: 2021-08-09 15:13:06
 @Contact: cgjhaha@qq.com
 @Description: merge the dmo results
 '''
@@ -127,7 +127,7 @@ def get_design_sraf_layer(cell, init_gds, args):
 def merge_dmo(args):
     in_folder = args.dmo_res_folder
     out_folder = args.dmo_merged_folder
-    frdb_path = '/research/dept7/glchen/github/pix2pixHD/datasets/fc_pre/frdb/ispd19fc5/ispd19_test_fr'
+    frdb_path = f'/research/dept7/glchen/github/pix2pixHD/datasets/fc_pre/frdb/{args.name}/ispd19_test_fr'
     init_gds = '/research/dept7/glchen/github/pix2pixHD/datasets/fc_pre/test_gds/ispd19test/ispd19_test.gds'
     db = shelve.open(frdb_path)
     final_rects = db['final_rects']
