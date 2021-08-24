@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-09 16:00:12
-LastEditTime: 2021-08-18 08:55:53
+LastEditTime: 2021-08-19 07:58:51
 @Contact: cgjhaha@qq.com
 @Description: total flow
 '''
@@ -101,13 +101,13 @@ Visual the fr
 analysis the vianum distribution
 how many 1 2 3 4 5 6 in this way
 '''
-# info_fr(args)
+info_fr(args)
 
 '''
 create fr to a small window gds
 '''
 
-fr2gds(args)
+# fr2gds(args)
 
 '''
 merge all the final rects

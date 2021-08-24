@@ -1,7 +1,7 @@
 '''
 @Author: Guojin Chen
 @Date: 2020-04-16 16:52:44
-LastEditTime: 2021-08-14 00:55:25
+LastEditTime: 2021-08-19 08:18:28
 @Contact: cgjhaha@qq.com
 @Description: get final rects infomations
 '''
@@ -18,12 +18,24 @@ def logtxt(info,args):
     with open(txt_path, mode='a+') as f:
         f.write(info)
 
+
+def get_centers(final_rects):
+    fr_centers = []
+    for fr in tqdm(final_rects):
+        print(fr.center)
+        fr_centers.append(fr.center)
+    fr_centers = np.array(fr_centers)
+    np.savetxt('./centers.txt', fr_centers)
+
+
 def info(gds, args):
     filename = os.path.basename(gds)
     frdb_name = filename.replace('.gds','_fr')
     frdb_path = os.path.join(args.frdb_folder, frdb_name)
     db = shelve.open(frdb_path)
+    # print(db)
     final_rects = db['final_rects']
+    # get_centers(final_rects)
     via_dt = {}
     for i in range(1,args.max_via_in_win+1):
         via_dt[str(i)] = 0
