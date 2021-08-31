@@ -2,7 +2,7 @@
 Author: Guojin Chen @ CUHK-CSE
 Homepage: https://dekura.github.io/
 Date: 2021-08-25 08:28:29
-LastEditTime: 2021-08-25 12:09:08
+LastEditTime: 2021-08-30 19:29:28
 Contact: cgjhaha@qq.com
 Description: translate the rgb image to single channel images.
 '''
@@ -15,8 +15,8 @@ from PIL import Image
 from pathlib import Path
 
 
-in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/via_layouts_0.4_unpaired/dls'
-out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/via_layouts_0.4_unpaired/dls_single'
+in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_unpaired_rgb_2048'
+out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_unpaired_single_2048'
 
 in_dir = Path(in_dir)
 out_dir = Path(out_dir)

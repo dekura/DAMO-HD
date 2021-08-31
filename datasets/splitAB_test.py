@@ -2,7 +2,7 @@
 Author: Guojin Chen @ CUHK-CSE
 Homepage: https://dekura.github.io/
 Date: 2021-02-05 17:27:11
-LastEditTime: 2021-08-30 18:40:09
+LastEditTime: 2021-08-30 19:02:05
 Contact: cgjhaha@qq.com
 Description:
 imamge [A+B] => A,B
@@ -14,12 +14,12 @@ from tqdm import tqdm
 from pathlib import Path
 
 # in_dir = '/research/d2/xfyao/guojin/data/datasets/develset/pngs'
-in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_paired_rgb_2048/combine_AB/train'
+in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_paired_rgb_2048/combine_AB/test'
 # in_dir = '/Users/dekura/Downloads/pngs/'
 in_dir = Path(in_dir)
 
-out_A = in_dir.parent / 'train_A'
-out_B = in_dir.parent / 'train_B'
+out_A = in_dir.parent / 'test_A'
+out_B = in_dir.parent / 'test_B'
 
 out_A.mkdir(exist_ok=True)
 out_B.mkdir(exist_ok=True)
