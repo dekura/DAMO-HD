@@ -2,7 +2,7 @@
 Author: Guojin Chen @ CUHK-CSE
 Homepage: https://dekura.github.io/
 Date: 2021-08-25 08:28:29
-LastEditTime: 2021-08-30 19:29:28
+LastEditTime: 2021-09-08 17:33:14
 Contact: cgjhaha@qq.com
 Description: translate the rgb image to single channel images.
 '''
@@ -15,8 +15,15 @@ from PIL import Image
 from pathlib import Path
 
 
-in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_unpaired_rgb_2048'
-out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_unpaired_single_2048'
+# in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_unpaired_rgb_2048'
+# out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_unpaired_single_2048'
+
+# in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_paired_rgb_2048/combine_AB'
+# out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/maskg_contourw_rect_paired_single_2048/combine_AB'
+
+in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/ispdhaoyusep/dls/'
+out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/ispdhaoyusep_single/dls'
+
 
 in_dir = Path(in_dir)
 out_dir = Path(out_dir)
