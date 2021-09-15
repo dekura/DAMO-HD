@@ -2,7 +2,7 @@
 Author: Guojin Chen @ CUHK-CSE
 Homepage: https://dekura.github.io/
 Date: 2021-02-05 17:27:11
-LastEditTime: 2021-09-10 16:52:26
+LastEditTime: 2021-09-10 17:00:13
 Contact: cgjhaha@qq.com
 Description:
 imamge [A+B+C] => A,B,C
@@ -16,9 +16,11 @@ from tqdm import tqdm
 from pathlib import Path
 
 # in_dir = '/research/d2/xfyao/guojin/data/datasets/develset/pngs'
-in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/haoyu_data/metal/artimc'
+# in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/haoyu_data/metal/artimc'
+in_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/haoyu_data/metal/iccad13mc'
 # in_dir = '/Users/dekura/Downloads/pngs/'
-out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/haoyu_data/metal_dls/train'
+# out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/haoyu_data/metal_dls/train'
+out_dir = '/research/d4/gds/gjchen21/datasets/datasets/dlsopc_datasets/haoyu_data/metal_dls/test'
 
 in_dir = Path(in_dir)
 out_dir = Path(out_dir)
